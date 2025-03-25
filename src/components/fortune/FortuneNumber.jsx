@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { config } from '../../config';
-import FortuneInterpret from './FortuneInterpret';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { config } from "../../config";
+import FortuneInterpret from "./FortuneInterpret";
 
-const MAIN_COLOR = '#C84B31';
+const MAIN_COLOR = "#C84B31";
 
 const Container = styled.div`
   width: 100%;
@@ -59,21 +59,21 @@ const InterpretButton = styled.button`
   color: white;
   font-size: 18px;
   font-weight: 800;
-  font-family: 'Noto Serif TC', serif;
+  font-family: "Noto Serif TC", serif;
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(184, 92, 56, 0.3);
   width: 200px;
-  
+
   &:hover {
     transform: translateY(-2px);
-    background-color: #B85C38;
+    background-color: #b85c38;
   }
-  
+
   &:active {
     transform: translateY(0);
   }
-  
+
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
@@ -94,14 +94,10 @@ const LoadingOverlay = styled.div`
   z-index: 1000;
   color: white;
   font-size: 20px;
-  font-family: 'Noto Serif TC', serif;
+  font-family: "Noto Serif TC", serif;
 `;
 
-const FortuneNumber = ({ 
-  user_name,  
-  category,
-  existingNumber = null
-}) => {
+const FortuneNumber = ({ user_name, category, existingNumber = null }) => {
   const [isInterpreting, setIsInterpreting] = useState(false);
   const [interpretation, setInterpretation] = useState(null);
   const [localFortuneNumber] = useState(() => {
@@ -117,32 +113,34 @@ const FortuneNumber = ({
       setIsInterpreting(true);
 
       if (!category || !localFortuneNumber) {
-        throw new Error('缺少必要參數');
+        throw new Error("缺少必要參數");
       }
 
+      // 如果用户没有输入名字，使用默认值
+      const nameToUse = user_name?.trim() ? user_name : "訪客";
+
       const response = await fetch(`${config.apiEndpoint}/interpretFortune`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          user_name: user_name,
+          user_name: nameToUse,
           fortune_category: category,
-          fortune_number: localFortuneNumber
-        })
+          fortune_number: localFortuneNumber,
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || '解籤失敗');
+        throw new Error(errorData.error || "解籤失敗");
       }
 
       const result = await response.json();
       setInterpretation(result);
-      
     } catch (error) {
-      console.error('Error:', error);
-      alert(error.message || '解籤失敗，請稍後再試');
+      console.error("Error:", error);
+      alert(error.message || "解籤失敗，請稍後再試");
     } finally {
       setIsInterpreting(false);
     }
@@ -150,7 +148,7 @@ const FortuneNumber = ({
 
   if (interpretation) {
     return (
-      <FortuneInterpret 
+      <FortuneInterpret
         name={user_name}
         category={category}
         fortuneNumber={localFortuneNumber}
@@ -160,44 +158,37 @@ const FortuneNumber = ({
   }
 
   // 確保籤號是兩位數的字串格式
-  const formattedNumber = String(localFortuneNumber).padStart(2, '0');
-  
+  const formattedNumber = String(localFortuneNumber).padStart(2, "0");
+
   return (
     <Container>
       <FortuneImageContainer>
         <FortuneImage>
-          <img 
-            src={`/jenn-ai/${formattedNumber}.png`} 
+          <img
+            src={`/jenn-ai/${formattedNumber}.png`}
             alt={`第${localFortuneNumber}籤`}
           />
         </FortuneImage>
       </FortuneImageContainer>
-      
+
       <ButtonContainer>
-        <InterpretButton 
-          onClick={handleInterpret}
-          disabled={isInterpreting}
-        >
-          {isInterpreting ? '解籤中...' : '開始解籤'}
+        <InterpretButton onClick={handleInterpret} disabled={isInterpreting}>
+          {isInterpreting ? "解籤中..." : "開始解籤"}
         </InterpretButton>
-        <InterpretButton 
+        <InterpretButton
           onClick={() => window.location.reload()}
           disabled={isInterpreting}
-          style={{ 
-            backgroundColor: 'transparent', 
-            color: MAIN_COLOR, 
-            border: `2px solid ${MAIN_COLOR}` 
+          style={{
+            backgroundColor: "transparent",
+            color: MAIN_COLOR,
+            border: `2px solid ${MAIN_COLOR}`,
           }}
         >
           重新抽籤
         </InterpretButton>
       </ButtonContainer>
 
-      {isInterpreting && (
-        <LoadingOverlay>
-          解籤中...
-        </LoadingOverlay>
-      )}
+      {isInterpreting && <LoadingOverlay>解籤中...</LoadingOverlay>}
     </Container>
   );
 };

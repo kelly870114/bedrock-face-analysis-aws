@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import React, { useState } from "react";
+import { X } from "lucide-react";
 import {
   PageWrapper,
   ChineseContainer,
@@ -18,40 +18,42 @@ import {
   ModalContent,
   ModalTitle,
   ModalCloseButton,
-  NumberInput
-} from './styles-fortune-mobile';
-import FortuneResult from './FortuneNumber';
+  NumberInput,
+  NumberButtonGrid,
+  NumberButton,
+} from "./styles-fortune-mobile";
+import FortuneResult from "./FortuneNumber";
 
 const FortuneMobileView = () => {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [showNumberModal, setShowNumberModal] = useState(false);
-  const [fortuneNumber, setFortuneNumber] = useState('');
+  const [fortuneNumber, setFortuneNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [existingNumber, setExistingNumber] = useState(null);
 
   const handleStartFortune = () => {
-    setExistingNumber(null);  // 正常抽籤流程，清空既有籤號
+    setExistingNumber(null); // 正常抽籤流程，清空既有籤號
     setShowResult(true);
   };
 
   const handleExistingNumber = () => {
     const number = parseInt(fortuneNumber);
     if (number >= 1 && number <= 24) {
-      setExistingNumber(number);  // 設置已有籤號
+      setExistingNumber(number); // 設置已有籤號
       setShowNumberModal(false);
       setShowResult(true);
     } else {
-      alert('請輸入 1-24 之間的籤號');
+      alert("請輸入 1-24 之間的籤號");
     }
   };
 
   const handleRetry = () => {
-    setName('');
+    setName("");
     setSelectedCategory(null);
     setShowResult(false);
-    setFortuneNumber('');
+    setFortuneNumber("");
     setExistingNumber(null);
   };
 
@@ -88,22 +90,40 @@ const FortuneMobileView = () => {
 
                 <ButtonGroup>
                   <CategoryButton
-                    selected={selectedCategory === 'love'}
-                    onClick={() => setSelectedCategory('love')}
+                    selected={selectedCategory === "love"}
+                    onClick={() => setSelectedCategory("love")}
                   >
                     愛情
                   </CategoryButton>
                   <CategoryButton
-                    selected={selectedCategory === 'career'}
-                    onClick={() => setSelectedCategory('career')}
+                    selected={selectedCategory === "career"}
+                    onClick={() => setSelectedCategory("career")}
                   >
                     事業
                   </CategoryButton>
                   <CategoryButton
-                    selected={selectedCategory === 'wealth'}
-                    onClick={() => setSelectedCategory('wealth')}
+                    selected={selectedCategory === "wealth"}
+                    onClick={() => setSelectedCategory("wealth")}
                   >
                     財運
+                  </CategoryButton>
+                  <CategoryButton
+                    selected={selectedCategory === "family"}
+                    onClick={() => setSelectedCategory("family")}
+                  >
+                    家庭
+                  </CategoryButton>
+                  <CategoryButton
+                    selected={selectedCategory === "study"}
+                    onClick={() => setSelectedCategory("study")}
+                  >
+                    學業
+                  </CategoryButton>
+                  <CategoryButton
+                    selected={selectedCategory === "travel"}
+                    onClick={() => setSelectedCategory("travel")}
+                  >
+                    旅遊
                   </CategoryButton>
                 </ButtonGroup>
 
@@ -117,11 +137,11 @@ const FortuneMobileView = () => {
                 <StartButton
                   disabled={!selectedCategory}
                   onClick={() => setShowNumberModal(true)}
-                  style={{ 
-                    backgroundColor: 'transparent', 
-                    color: '#C84B31', 
-                    border: '2px solid #C84B31',
-                    marginTop: '10px'
+                  style={{
+                    backgroundColor: "transparent",
+                    color: "#C84B31",
+                    border: "2px solid #C84B31",
+                    marginTop: "10px",
                   }}
                 >
                   已有籤號
@@ -132,7 +152,7 @@ const FortuneMobileView = () => {
             <FortuneResult
               user_name={name}
               category={selectedCategory}
-              existingNumber={existingNumber}  // 傳遞已有籤號
+              existingNumber={existingNumber} // 傳遞已有籤號
             />
           )}
         </ContentWrapper>
@@ -140,11 +160,13 @@ const FortuneMobileView = () => {
 
       {showNumberModal && (
         <ModalOverlay onClick={() => setShowNumberModal(false)}>
-          <ModalContent onClick={e => e.stopPropagation()}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalCloseButton onClick={() => setShowNumberModal(false)}>
               <X size={20} />
             </ModalCloseButton>
-            <ModalTitle>請輸入籤號</ModalTitle>
+            <ModalTitle>選擇籤號</ModalTitle>
+
+            {/* 數字輸入框 */}
             <NumberInput
               type="number"
               min="1"
@@ -153,9 +175,28 @@ const FortuneMobileView = () => {
               onChange={(e) => setFortuneNumber(e.target.value)}
               placeholder="1-24"
             />
+
+            {/* 數字按鈕 */}
+            <NumberButtonGrid>
+              {Array.from({ length: 24 }, (_, i) => i + 1).map((num) => (
+                <NumberButton
+                  key={num}
+                  selected={parseInt(fortuneNumber) === num}
+                  onClick={() => setFortuneNumber(num.toString())}
+                >
+                  {num}
+                </NumberButton>
+              ))}
+            </NumberButtonGrid>
+
             <StartButton
               onClick={handleExistingNumber}
-              disabled={isLoading || !fortuneNumber || parseInt(fortuneNumber) < 1 || parseInt(fortuneNumber) > 24}
+              disabled={
+                isLoading ||
+                !fortuneNumber ||
+                parseInt(fortuneNumber) < 1 ||
+                parseInt(fortuneNumber) > 24
+              }
             >
               確定
             </StartButton>

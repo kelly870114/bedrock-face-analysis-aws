@@ -262,7 +262,7 @@ export const ModalContent = styled.div`
   padding: 36px 24px 24px;
   border-radius: 12px;
   width: 90%;
-  max-width: 320px;
+  max-width: 350px;
   position: relative;
   border: 2px solid ${MAIN_COLOR};
   display: flex;
@@ -295,6 +295,34 @@ export const ModalCloseButton = styled.button`
   
   &:hover {
     color: #000;
+  }
+`;
+
+export const NumberButtonGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin: 0 0 20px;
+  width: 100%;
+  max-width: 300px;
+`;
+
+export const NumberButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 8px;
+  border: 2px solid ${MAIN_COLOR};
+  background-color: ${props => props.selected ? MAIN_COLOR : 'transparent'};
+  color: ${props => props.selected ? 'white' : MAIN_COLOR};
+  font-size: 16px;
+  font-family: 'Noto Serif TC', serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: ${props => props.selected ? '#B85C38' : '#fff0e6'};
   }
 `;
 
