@@ -108,14 +108,14 @@ const FortuneMobileView = () => {
                 </ButtonGroup>
 
                 <StartButton
-                  disabled={!name.trim() || !selectedCategory}
+                  disabled={!selectedCategory}
                   onClick={handleStartFortune}
                 >
                   開始抽籤
                 </StartButton>
 
                 <StartButton
-                  disabled={!name.trim() || !selectedCategory}
+                  disabled={!selectedCategory}
                   onClick={() => setShowNumberModal(true)}
                   style={{ 
                     backgroundColor: 'transparent', 

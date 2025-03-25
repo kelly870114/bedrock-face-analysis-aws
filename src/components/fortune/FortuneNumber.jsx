@@ -116,7 +116,7 @@ const FortuneNumber = ({
     try {
       setIsInterpreting(true);
 
-      if (!user_name || !category || !localFortuneNumber) {
+      if (!category || !localFortuneNumber) {
         throw new Error('缺少必要參數');
       }
 
