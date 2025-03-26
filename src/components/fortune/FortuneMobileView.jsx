@@ -126,13 +126,14 @@ const FortuneMobileView = () => {
                     旅遊
                   </CategoryButton>
                 </ButtonGroup>
-
-                <StartButton
+                
+                {/* 活動需要抽籤按鈕才使用 */}
+                {/* <StartButton
                   disabled={!selectedCategory}
                   onClick={handleStartFortune}
                 >
                   開始抽籤
-                </StartButton>
+                </StartButton> */}
 
                 <StartButton
                   disabled={!selectedCategory}
