@@ -75,7 +75,10 @@ const FortuneInterpret = ({
   const categoryText = {
     love: '愛情',
     career: '事業',
-    wealth: '財運'
+    wealth: '財運',
+    study: '學業',
+    family: '家庭',
+    travel: '旅遊'
   }[category];
 
   // WebSocket connection setup
