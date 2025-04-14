@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { X } from "lucide-react";
 import {
   PageWrapper,
@@ -21,10 +22,17 @@ import {
   NumberInput,
   NumberButtonGrid,
   NumberButton,
+  // 姓名學
+  ToggleContainer,
+  ToggleLabel,
+  ToggleSwitch,
+  ToggleInput,
+  ToggleSlider
 } from "./styles-fortune-mobile";
 import FortuneResult from "./FortuneNumber";
 
 const FortuneMobileView = () => {
+  const [searchParams] = useSearchParams(); 
   const [name, setName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showResult, setShowResult] = useState(false);
@@ -32,8 +40,22 @@ const FortuneMobileView = () => {
   const [fortuneNumber, setFortuneNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [existingNumber, setExistingNumber] = useState(null);
+  const [useNameAnalysis, setUseNameAnalysis] = useState(true); // 默認開啟姓名學分析
+
+  // 新增: 從 URL 參數讀取默認的姓名學分析設置
+  useEffect(() => {
+    const nameAnalysisParam = searchParams.get("nameAnalysis");
+    if (nameAnalysisParam === "false") {
+      setUseNameAnalysis(false);
+    }
+  }, [searchParams]);
 
   const handleStartFortune = () => {
+    // 新增: 如果啟用姓名學分析但沒有填寫姓名，使用預設值
+    if (useNameAnalysis && !name.trim()) {
+      setName("訪客");
+    }
+    
     setExistingNumber(null); // 正常抽籤流程，清空既有籤號
     setShowResult(true);
   };
@@ -41,12 +63,22 @@ const FortuneMobileView = () => {
   const handleExistingNumber = () => {
     const number = parseInt(fortuneNumber);
     if (number >= 1 && number <= 24) {
+      // 新增: 如果啟用姓名學分析但沒有填寫姓名，使用預設值
+      if (useNameAnalysis && !name.trim()) {
+        setName("訪客");
+      }
+      
       setExistingNumber(number); // 設置已有籤號
       setShowNumberModal(false);
       setShowResult(true);
     } else {
       alert("請輸入 1-24 之間的籤號");
     }
+  };
+
+  // 姓名學分析切換處理函數
+  const handleToggleNameAnalysis = () => {
+    setUseNameAnalysis(!useNameAnalysis);
   };
 
   const handleRetry = () => {
@@ -78,16 +110,35 @@ const FortuneMobileView = () => {
               </LogoContainer>
 
               <FormContainer>
-                <InputContainer>
-                  <Input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="請輸入姓名"
-                    maxLength={20}
-                  />
-                </InputContainer>
 
+                {/* 姓名學分析開關 */}
+                <ToggleContainer>
+                  <ToggleLabel>
+                    結合姓名學分析
+                    <ToggleSwitch>
+                      <ToggleInput
+                        type="checkbox"
+                        checked={useNameAnalysis}
+                        onChange={handleToggleNameAnalysis}
+                      />
+                      <ToggleSlider />
+                    </ToggleSwitch>
+                  </ToggleLabel>
+                </ToggleContainer>
+
+                {useNameAnalysis && (
+                  <InputContainer>
+                    <Input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="請輸入姓名"
+                      maxLength={20}
+                    />
+                  </InputContainer>
+                )}
+
+                {/* 類別選擇按鈕 */}
                 <ButtonGroup>
                   <CategoryButton
                     selected={selectedCategory === "love"}
@@ -127,14 +178,16 @@ const FortuneMobileView = () => {
                   </CategoryButton>
                 </ButtonGroup>
                 
+                {/* 開始抽籤按鈕 */}
                 {/* 活動需要抽籤按鈕才使用 */}
-                {/* <StartButton
+                <StartButton
                   disabled={!selectedCategory}
                   onClick={handleStartFortune}
                 >
                   開始抽籤
-                </StartButton> */}
+                </StartButton>
 
+                {/* 已有籤號按鈕 */}
                 <StartButton
                   disabled={!selectedCategory}
                   onClick={() => setShowNumberModal(true)}
@@ -151,9 +204,10 @@ const FortuneMobileView = () => {
             </>
           ) : (
             <FortuneResult
-              user_name={name}
+              user_name={useNameAnalysis ? name : ""} // 只在使用姓名學分析時傳遞姓名
               category={selectedCategory}
-              existingNumber={existingNumber} // 傳遞已有籤號
+              existingNumber={existingNumber}
+              useNameAnalysis={useNameAnalysis} // 傳遞是否使用姓名學分析
             />
           )}
         </ContentWrapper>

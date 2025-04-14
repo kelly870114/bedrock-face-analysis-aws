@@ -338,3 +338,69 @@ export const NumberInput = styled(Input)`
     color: #999;
   }
 `;
+
+
+// 姓名學分析開關相關樣式
+export const ToggleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  width: 90vw;
+  max-width: min(400px, 90%);
+  font-family: 'Noto Serif TC', serif;
+`;
+
+export const ToggleLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  color: ${MAIN_COLOR};
+`;
+
+export const ToggleSwitch = styled.label`
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+`;
+
+export const ToggleInput = styled.input`
+  opacity: 0;
+  width: 0;
+  height: 0;
+
+  &:checked + span {
+    background-color: ${MAIN_COLOR};
+  }
+
+  &:checked + span:before {
+    transform: translateX(24px);
+  }
+`;
+
+export const ToggleSlider = styled.span`
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 28px;
+
+  &:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+`;

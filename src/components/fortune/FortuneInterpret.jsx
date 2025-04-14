@@ -60,7 +60,8 @@ const FortuneInterpret = ({
   name, 
   category, 
   fortuneNumber,
-  interpretation
+  interpretation,
+  useNameAnalysis = true // 姓名學分析參數，默認開啟
 }) => {
   const [showCamera, setShowCamera] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -134,16 +135,24 @@ const FortuneInterpret = ({
       });
   
       const base64data = await base64Promise;
+
+      // 構建請求體
+      const requestBody = {
+        image: base64data,
+        fortune_analysis_id: interpretation.fortune_analysis_id
+      };
+
+      // 添加姓名學分析參數
+      if (!useNameAnalysis) {
+        requestBody.use_name_analysis = false;
+      }
   
       const response = await fetch(`${config.apiEndpoint}/fortuneAndFace`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          image: base64data,
-          fortune_analysis_id: interpretation.fortune_analysis_id
-        })
+        body: JSON.stringify(requestBody)
       });
   
       if (!response.ok) {
@@ -305,11 +314,16 @@ const FortuneInterpret = ({
       </ImageContainer>
 
       <ResultContainer ref={resultRef}>
-        <AnalysisBlock>
+      <AnalysisBlock>
           <IconImage src={getIconForBlock(1)} />
           <BlockTitle>
             <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
-            <span className="title-text">{name} 的{categoryText}解籤</span>
+            {/* 根據姓名學分析設定顯示不同的標題 */}
+            <span className="title-text">
+              {useNameAnalysis 
+                ? `${name} 的${categoryText}解籤` 
+                : `${categoryText}解籤`}
+            </span>
             <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
           </BlockTitle>
           <ContentItem>
