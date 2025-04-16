@@ -41,36 +41,83 @@ const FortuneMobileView = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [existingNumber, setExistingNumber] = useState(null);
   const [useNameAnalysis, setUseNameAnalysis] = useState(true); // 默認開啟姓名學分析
+  const [instanceKey, setInstanceKey] = useState(Date.now()); // 用於強制重新渲染FortuneResult
 
-  // 新增: 從 URL 參數讀取默認的姓名學分析設置
+  // 從 URL 參數讀取默認的姓名學分析設置和重置信息
   useEffect(() => {
     const nameAnalysisParam = searchParams.get("nameAnalysis");
     if (nameAnalysisParam === "false") {
       setUseNameAnalysis(false);
     }
+    
+    // 檢查是否是重置操作
+    const resetParam = searchParams.get("reset");
+    if (resetParam) {
+      // 重置所有狀態
+      setName("");
+      setSelectedCategory(null);
+      setShowResult(false);
+      setExistingNumber(null);
+      setFortuneNumber("");
+      
+      // 更新URL，移除reset參數
+      const url = new URL(window.location.href);
+      url.searchParams.delete("reset");
+      window.history.replaceState({}, "", url);
+    }
   }, [searchParams]);
 
   const handleStartFortune = () => {
-    // 新增: 如果啟用姓名學分析但沒有填寫姓名，使用預設值
+    // 檢查是否選擇了類別
+    if (!selectedCategory) {
+      alert("請選擇一個籤詩類別");
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    // 如果啟用姓名學分析但沒有填寫姓名，使用預設值
     if (useNameAnalysis && !name.trim()) {
       setName("訪客");
     }
     
-    setExistingNumber(null); // 正常抽籤流程，清空既有籤號
-    setShowResult(true);
+    // 清空既有籤號
+    setExistingNumber(null);
+    
+    // 生成新的instanceKey，確保FortuneResult組件完全重新渲染
+    setInstanceKey(Date.now());
+    
+    // 使用延時確保狀態更新完成後再顯示結果
+    setTimeout(() => {
+      setShowResult(true);
+      setIsLoading(false);
+    }, 50);
   };
 
   const handleExistingNumber = () => {
     const number = parseInt(fortuneNumber);
     if (number >= 1 && number <= 24) {
-      // 新增: 如果啟用姓名學分析但沒有填寫姓名，使用預設值
+      setIsLoading(true);
+      
+      // 如果啟用姓名學分析但沒有填寫姓名，使用預設值
       if (useNameAnalysis && !name.trim()) {
         setName("訪客");
       }
       
-      setExistingNumber(number); // 設置已有籤號
+      // 設置已有籤號
+      setExistingNumber(number);
+      
+      // 關閉模態框
       setShowNumberModal(false);
-      setShowResult(true);
+      
+      // 生成新的instanceKey
+      setInstanceKey(Date.now());
+      
+      // 延時顯示結果
+      setTimeout(() => {
+        setShowResult(true);
+        setIsLoading(false);
+      }, 50);
     } else {
       alert("請輸入 1-24 之間的籤號");
     }
@@ -79,14 +126,6 @@ const FortuneMobileView = () => {
   // 姓名學分析切換處理函數
   const handleToggleNameAnalysis = () => {
     setUseNameAnalysis(!useNameAnalysis);
-  };
-
-  const handleRetry = () => {
-    setName("");
-    setSelectedCategory(null);
-    setShowResult(false);
-    setFortuneNumber("");
-    setExistingNumber(null);
   };
 
   return (
@@ -110,7 +149,6 @@ const FortuneMobileView = () => {
               </LogoContainer>
 
               <FormContainer>
-
                 {/* 姓名學分析開關 */}
                 <ToggleContainer>
                   <ToggleLabel>
@@ -179,17 +217,16 @@ const FortuneMobileView = () => {
                 </ButtonGroup>
                 
                 {/* 開始抽籤按鈕 */}
-                {/* 活動需要抽籤按鈕才使用 */}
                 <StartButton
-                  disabled={!selectedCategory}
+                  disabled={!selectedCategory || isLoading}
                   onClick={handleStartFortune}
                 >
-                  開始抽籤
+                  {isLoading ? "請稍候..." : "開始抽籤"}
                 </StartButton>
 
                 {/* 已有籤號按鈕 */}
                 <StartButton
-                  disabled={!selectedCategory}
+                  disabled={!selectedCategory || isLoading}
                   onClick={() => setShowNumberModal(true)}
                   style={{
                     backgroundColor: "transparent",
@@ -204,10 +241,11 @@ const FortuneMobileView = () => {
             </>
           ) : (
             <FortuneResult
-              user_name={useNameAnalysis ? name : ""} // 只在使用姓名學分析時傳遞姓名
+              key={instanceKey} // 使用key強制重新渲染
+              user_name={useNameAnalysis ? name : ""}
               category={selectedCategory}
               existingNumber={existingNumber}
-              useNameAnalysis={useNameAnalysis} // 傳遞是否使用姓名學分析
+              useNameAnalysis={useNameAnalysis}
             />
           )}
         </ContentWrapper>
@@ -253,9 +291,17 @@ const FortuneMobileView = () => {
                 parseInt(fortuneNumber) > 24
               }
             >
-              確定
+              {isLoading ? "請稍候..." : "確定"}
             </StartButton>
           </ModalContent>
+        </ModalOverlay>
+      )}
+
+      {isLoading && (
+        <ModalOverlay>
+          <div style={{ color: 'white', fontSize: '20px', fontFamily: 'Noto Serif TC, serif' }}>
+            載入中...
+          </div>
         </ModalOverlay>
       )}
     </PageWrapper>
