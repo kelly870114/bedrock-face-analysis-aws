@@ -9,6 +9,7 @@ import {
   Corner,
   TitleContainer,
   LogoContainer,
+  AwsLogoContainer,
   Container,
   Content,
   MessageBox,
@@ -233,19 +234,22 @@ const MobileView = () => {
         <ContentWrapper>
           {!isAnalyzing && !analysisResult && (
             <>
+              <AwsLogoContainer>
+                <img src="/aws-logo.png" alt="AWS" />
+              </AwsLogoContainer>
               <TitleContainer>
-                <img src="/app_title.png" alt="面相大師" />
+                <img src="/app_title_face_aws.png" alt="面相大師" />
               </TitleContainer>
 
               <LogoContainer>
-                <img src="/mobile_logo.png" alt="背景圖片" />
+                <img src="/mobile_logo_face_aws.png" alt="背景圖片" />
               </LogoContainer>
 
               <CameraButton
                 onClick={() => setShowCamera(true)}
                 disabled={isAnalyzing}
               >
-                <CameraIcon size={24} color="white" />
+                <CameraIcon size={24} />
                 開始分析
               </CameraButton>
             </>

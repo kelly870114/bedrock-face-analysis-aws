@@ -1,6 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 
-export const MAIN_COLOR = '#C84B31';
+export const MAIN_COLOR = '#009e93';
 
 const fadeInOut = keyframes`
   0% { opacity: 0.7; }
@@ -51,19 +51,19 @@ export const ImageContainer = styled.div`
 `;
 
 export const ResultContainer = styled.div`
-  background-color: #fdf6e9;
+  background-color:rgba(0, 158, 148, 0.3);
   padding: 20px;
   border-radius: 12px;
 `;
 
 export const AnalysisBlock = styled.div`
-  background: #fff0d9;
+  background: rgba(0, 158, 148, 0.4);
   padding: 2rem 1rem 1rem;
   margin-bottom: 2.5rem;
   margin-top: 2rem;
   width: 100%;
   box-sizing: border-box;
-  border: 2px solid ${MAIN_COLOR};
+  border: 2px solid #009e93;
   border-radius: 12px;
   position: relative;
 `;
@@ -142,13 +142,13 @@ export const ItemTitle = styled.h4`
 `;
 
 export const ItemContent = styled.p`
-  color: #414141;
+  color: #9ffcea;
   font-size: 15px;
   line-height: 1.6;
   margin: 0;
   text-align: center;
   font-family: "Noto Serif TC", serif;
-  width: 100%;  // 新增：確保內容寬度一致
+  width: 100%; 
 `;
 
 export const IconImage = styled.div`
@@ -192,12 +192,12 @@ export const ActionButton = styled.button`
   font-family: 'Noto Serif TC', serif;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(184, 92, 56, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
   width: 300px;
   
   &:hover {
     transform: translateY(-2px);
-    background-color: #B85C38;
+    background-color: #009e93;
   }
   
   &:active {

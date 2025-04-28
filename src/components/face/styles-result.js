@@ -1,6 +1,6 @@
 import styled, { createGlobalStyle } from 'styled-components';
 
-const MAIN_COLOR = "#C84B31";
+const MAIN_COLOR = "#009e93";
 
 export const Container = styled.div`
   width: 100%;
@@ -40,18 +40,19 @@ export const RetakeButton = styled.button`
   font-size: 16px;
 
   &:hover {
-    background-color: #b85c38;
+    background-color: #ffffff;
+    color: ${MAIN_COLOR};
   }
 `;
 
 export const AnalysisBlock = styled.div`
-  background: #fff0d9;
+  background:rgba(0, 158, 148, 0.4);
   padding: 2rem 1rem 1rem;
   margin-bottom: 2.5rem;
   margin-top: 2rem;
   width: 100%;
   box-sizing: border-box;
-  border: 2px solid ${MAIN_COLOR};
+  border: 2px solid #009e93;
   border-radius: 12px;
   position: relative;
   display: flex;
@@ -62,19 +63,22 @@ export const AnalysisBlock = styled.div`
 export const BlockTitle = styled.div`
   position: relative;
   margin: 0 auto 20px;
-  background: #fff7e6;
-  padding: 5px 20px;
-  border: 2px solid ${MAIN_COLOR};
-  border-radius: 20px;
-  color: #000000;
-  font-size: 18px;
+  padding: 15px 30px;
+  color: white;
+  font-size: 16px;
   font-weight: 500;
   font-family: "Noto Serif TC", serif;
   width: fit-content;
-  min-width: min(200px, 90%);
-  max-width: 90%;
+  min-width: min(200px, 80%);
+  max-width: 80%;
   box-sizing: border-box;
-  position: relative; // 用於定位裝飾圖示
+  
+  /* 使用提供的圖片作為背景 */
+  background-image: url('face-frame.png');
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: none;
 
   // 裝飾圖示使用絕對定位
   .title-icon {
@@ -96,9 +100,9 @@ export const BlockTitle = styled.div`
   .title-text {
     display: block;
     text-align: center;
-    padding: 0 30px; // 為兩側的圖示預留空間
-    word-wrap: break-word; // 允許長單詞換行
-    hyphens: auto; // 允許斷字
+    padding: 0 30px;
+    word-wrap: break-word;
+    hyphens: auto;
   }
 
   @media (max-width: 350px) {
@@ -111,7 +115,7 @@ export const BlockTitle = styled.div`
     }
 
     .title-text {
-      padding: 0 25px; // 調整間距
+      padding: 0 25px;
     }
   }
 `;
@@ -178,7 +182,8 @@ export const DownloadButton = styled.button`
   font-size: 16px;
 
   &:hover {
-    background-color: #b85c38;
+    background-color: #ffffff;
+    color: ${MAIN_COLOR};
   }
   
   &:disabled {

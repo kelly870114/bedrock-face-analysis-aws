@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { config } from "../../config";
 import FortuneInterpret from "./FortuneInterpret";
 
-const MAIN_COLOR = "#C84B31";
+const MAIN_COLOR = "#009e93";
 
 const Container = styled.div`
   width: 100%;
@@ -39,7 +39,7 @@ const FortuneImage = styled.div`
 const FortuneTextContainer = styled.div`
   margin: 20px auto;
   padding: 20px;
-  background-color: #fff0d9;
+  background-color:rgba(0, 158, 148, 0.24);
   border: 2px solid ${MAIN_COLOR};
   border-radius: 12px;
   text-align: center;
@@ -50,14 +50,15 @@ const FortuneTextContainer = styled.div`
 
 const FortuneTitle = styled.h3`
   font-size: 18px;
-  color: ${MAIN_COLOR};
+  color: #ffffff;
   margin-bottom: 16px;
+  font-weight: bold;
 `;
 
 const FortuneText = styled.p`
   font-size: 16px;
   line-height: 1.8;
-  color: #333;
+  color: #9ffcea;
 `;
 
 const ButtonContainer = styled.div`
@@ -87,18 +88,54 @@ const InterpretButton = styled.button`
   font-family: "Noto Serif TC", serif;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(184, 92, 56, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
   width: 200px;
 
   &:hover {
     transform: translateY(-2px);
-    background-color: #b85c38;
+    background-color: #ffffff;
+    color: ${MAIN_COLOR};
   }
 
   &:active {
     transform: translateY(0);
   }
 
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+`;
+
+const TransparentButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 32px;
+  border-radius: 16px;
+  border-color: ${MAIN_COLOR};
+  background-color: transparent;
+  color: #9ffcea;
+  font-size: 18px;
+  font-weight: 800;
+  font-family: 'Noto Serif TC', serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+  width: 200px;
+  
+  &:hover {
+    transform: translateY(-2px);
+    background-color: #ffffff;
+    color: ${MAIN_COLOR};
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
@@ -397,17 +434,12 @@ const FortuneNumber = ({
             >
               {isInterpreting ? "解籤中..." : "開始解籤"}
             </InterpretButton>
-            <InterpretButton
+            <TransparentButton
               onClick={handleReset}
               disabled={isInterpreting || isLoadingPoem}
-              style={{
-                backgroundColor: "transparent",
-                color: MAIN_COLOR,
-                border: `2px solid ${MAIN_COLOR}`,
-              }}
             >
               重新抽籤
-            </InterpretButton>
+            </TransparentButton>
           </ButtonContainer>
         </>
       )}

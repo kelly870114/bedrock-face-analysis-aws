@@ -185,9 +185,7 @@ const AnalysisResult = ({
           <AnalysisBlock>
             <IconImage src={getIconForBlock(1)} />
             <BlockTitle>
-              <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
               <span className="title-text">{result.faceShape.title}</span>
-              <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
             </BlockTitle>
             {Object.entries(result.faceShape.content).map(([key, value]) => (
               <ContentItem key={key}>
@@ -202,9 +200,7 @@ const AnalysisResult = ({
           <AnalysisBlock>
             <IconImage src={getIconForBlock(2)} />
             <BlockTitle>
-              <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
               <span className="title-text">{result.features.title}</span>
-              <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
             </BlockTitle>
             {Object.entries(result.features.content).map(([key, value]) => (
               <ContentItem key={key}>
@@ -219,9 +215,7 @@ const AnalysisResult = ({
           <AnalysisBlock>
             <IconImage src={getIconForBlock(3)} />
             <BlockTitle>
-              <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
               <span className="title-text">{result.overall.title}</span>
-              <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
             </BlockTitle>
             {Object.entries(result.overall.content).map(([key, value]) => (
               <ContentItem key={key}>
@@ -235,9 +229,7 @@ const AnalysisResult = ({
         {result.summary && (
           <Summary>
             <BlockTitle>
-              <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
               <span className="title-text">整體評析</span>
-              <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
             </BlockTitle>
             <p>{result.summary}</p>
           </Summary>

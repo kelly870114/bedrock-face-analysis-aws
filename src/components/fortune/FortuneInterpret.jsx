@@ -341,14 +341,12 @@ const FortuneInterpret = ({
         <AnalysisBlock>
           <IconImage src={getIconForBlock(1)} />
           <BlockTitle>
-            <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
             {/* 根據姓名學分析設定顯示不同的標題 */}
             <span className="title-text">
               {useNameAnalysis && name
                 ? `${name} 的${categoryText}解籤`
                 : `${categoryText}解籤`}
             </span>
-            <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
           </BlockTitle>
           <ContentItem>
             <ItemContent>{interpretation?.analysis || ""}</ItemContent>
@@ -358,9 +356,7 @@ const FortuneInterpret = ({
         <AnalysisBlock>
           <IconImage src={getIconForBlock(2)} />
           <BlockTitle>
-            <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
             <span className="title-text">建議</span>
-            <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
           </BlockTitle>
           <ContentItem>
             <ItemContent>{interpretation?.advice || ""}</ItemContent>
@@ -370,9 +366,7 @@ const FortuneInterpret = ({
         <AnalysisBlock>
           <IconImage src={getIconForBlock(3)} />
           <BlockTitle>
-            <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
             <span className="title-text">AWS 小提醒</span>
-            <img src="/chinese_tie.png" alt="裝飾" className="title-icon" />
           </BlockTitle>
           <ContentItem>
             <ItemContent>{interpretation?.aws_reminder || ""}</ItemContent>
@@ -398,8 +392,8 @@ const FortuneInterpret = ({
           disabled={isReloading || isUploading || isAnalyzing}
           style={{
             backgroundColor: "transparent",
-            color: "#C84B31",
-            border: "2px solid #C84B31",
+            color: "#9ffcea",
+            border: "2px solid #009e93",
           }}
         >
           {isReloading ? "跳轉中..." : "重新抽籤"}

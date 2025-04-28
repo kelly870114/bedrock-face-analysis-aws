@@ -8,6 +8,7 @@ import {
   Corner,
   ContentWrapper,
   TitleContainer,
+  AwsLogoContainer,
   LogoContainer,
   FormContainer,
   InputContainer,
@@ -15,6 +16,7 @@ import {
   ButtonGroup,
   CategoryButton,
   StartButton,
+  TransparentStartButton,
   ModalOverlay,
   ModalContent,
   ModalTitle,
@@ -140,12 +142,16 @@ const FortuneMobileView = () => {
         <ContentWrapper>
           {!showResult ? (
             <>
+              <AwsLogoContainer>
+                <img src="/aws-logo.png" alt="AWS" />
+              </AwsLogoContainer>
+            
               <TitleContainer>
-                <img src="/app_title_fortune.png" alt="解籤大師" />
+                <img src="/app_title_fortune_aws.png" alt="解籤大師" />
               </TitleContainer>
 
               <LogoContainer>
-                <img src="/mobile_logo_fortune.png" alt="解籤大師圖示" />
+                <img src="/mobile_logo_fortune_aws.png" alt="解籤大師圖示" />
               </LogoContainer>
 
               <FormContainer>
@@ -225,18 +231,12 @@ const FortuneMobileView = () => {
                 </StartButton>
 
                 {/* 已有籤號按鈕 */}
-                <StartButton
+                <TransparentStartButton
                   disabled={!selectedCategory || isLoading}
                   onClick={() => setShowNumberModal(true)}
-                  style={{
-                    backgroundColor: "transparent",
-                    color: "#C84B31",
-                    border: "2px solid #C84B31",
-                    marginTop: "10px",
-                  }}
                 >
                   已有籤號
-                </StartButton>
+                </TransparentStartButton>
               </FormContainer>
             </>
           ) : (

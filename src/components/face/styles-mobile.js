@@ -2,7 +2,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { keyframes } from 'styled-components';
 
 
-const MAIN_COLOR = '#C84B31';
+const MAIN_COLOR = '#009e93';
 
 const fadeInOut = keyframes`
   0% { opacity: 0.7; }
@@ -62,20 +62,26 @@ export const CameraButton = styled.button`
   padding: 16px 32px;
   border-radius: 16px;
   border: none;
-  background-color: #C84B31;
+  background-color: ${MAIN_COLOR};
   color: white;
   font-size: 18px;
   font-weight: 800;
   font-family: 'Noto Serif TC', serif;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(184, 92, 56, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
   width: 200px;
-  margin: 0 auto 40px;  /* 只保留底部邊距 */
+  margin: 0 auto 40px;
   
   &:hover {
     transform: translateY(-2px);
-    background-color: #B85C38;
+    background-color: #ffffff;
+    color: ${MAIN_COLOR};
+    
+    /* 當按鈕懸停時，讓其中的svg圖標也變色 */
+    svg {
+      color: ${MAIN_COLOR} !important;
+    }
   }
   
   &:active {
@@ -128,7 +134,11 @@ export const ImageOverlay = styled.div`
 // 最外層容器
 export const PageWrapper = styled.div`
   min-height: 100vh;
-  background-color: #FDF6E9;
+  background-image: url('/bg-fortune-aws.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   display: flex;
   flex-direction: column;
 `;
@@ -140,7 +150,11 @@ export const ChineseContainer = styled.div`
   flex-direction: column;
   position: relative;
   padding: 20px;
-  background-color: #FDF6E9;
+  background-image: url('/bg-fortune-aws.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   ${props => props.isAnalyzing && `
     width: 90%;
     max-width: 500px;
@@ -198,6 +212,19 @@ export const BorderContainer = styled.div`
     right: 20px;
     width: 7px;
     background-color: ${MAIN_COLOR};
+  }
+`;
+
+// AWS Logo容器
+export const AwsLogoContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  margin-bottom: 10px;
+  
+  img {
+    height: 40px;
+    width: auto;
   }
 `;
 

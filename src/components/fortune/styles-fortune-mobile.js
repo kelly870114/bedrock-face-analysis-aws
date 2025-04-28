@@ -1,14 +1,31 @@
 import styled from 'styled-components';
 
-export const MAIN_COLOR = '#C84B31';
+export const MAIN_COLOR = '#009e93';
 
 export const PageWrapper = styled.div`
   min-height: 100vh;
   height: 100%;
-  background-color: #FDF6E9;
+  background-image: url('/bg-fortune-aws.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+`;
+
+// AWS Logo容器
+export const AwsLogoContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  margin-bottom: 10px;
+  
+  img {
+    height: 40px;
+    width: auto;
+  }
 `;
 
 export const ChineseContainer = styled.div`
@@ -17,7 +34,7 @@ export const ChineseContainer = styled.div`
   flex-direction: column;
   position: relative;
   padding: 20px;
-  background-color: #FDF6E9;
+  background: transparent;
 
   &::before {
     content: '';
@@ -53,7 +70,7 @@ export const BorderContainer = styled.div`
     top: 50px;
     bottom: 50px;
     left: 20px;
-    width: 7px;
+    width: 2px;
     background-color: ${MAIN_COLOR};
   }
 
@@ -63,37 +80,37 @@ export const BorderContainer = styled.div`
     top: 50px;
     bottom: 50px;
     right: 20px;
-    width: 7px;
+    width: 2px;
     background-color: ${MAIN_COLOR};
   }
 `;
 
 export const Corner = styled.div`
   position: absolute;
-  width: 20px;
-  height: 20px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background-color: ${MAIN_COLOR};
   z-index: 2;
 
   &.top-left {
-    top: 10px;
-    left: 10px;
+    top: 15px;
+    left: 15px;
   }
 
   &.top-right {
-    top: 10px;
-    right: 10px;
+    top: 15px;
+    right: 15px;
   }
 
   &.bottom-left {
-    bottom: 10px;
-    left: 10px;
+    bottom: 15px;
+    left: 15px;
   }
 
   &.bottom-right {
-    bottom: 10px;
-    right: 10px;
+    bottom: 15px;
+    right: 15px;
   }
 `;
 
@@ -111,7 +128,7 @@ export const ContentWrapper = styled.div`
 
 export const TitleContainer = styled.div`
   width: 90vw;
-  max-width: min(500px, 90%);
+  max-width: min(300px, 80%);
   margin: 0 auto;
   text-align: center;
   flex-shrink: 0;
@@ -128,7 +145,7 @@ export const TitleContainer = styled.div`
 export const LogoContainer = styled.div`
   position: relative;
   width: 90vw;
-  max-width: min(500px, 90%);
+  max-width: min(450px, 90%);
   margin: auto;
   display: flex;
   align-items: center;
@@ -170,14 +187,16 @@ export const Input = styled.input`
   font-size: 16px;
   font-family: 'Noto Serif TC', serif;
   text-align: center;
+  background: rgba(255, 255, 255, 0.8);
   
   &:focus {
     outline: none;
-    border-color: #b85c38;
+    border-color: #007FAA;
+    background: rgba(255, 255, 255, 0.95);
   }
 
   &::placeholder {
-    color: #999;
+    color: #666;
     text-align: center;
   }
 `;
@@ -198,7 +217,7 @@ export const CategoryButton = styled.button`
   border-radius: 8px;
   border: 2px solid ${MAIN_COLOR};
   background-color: ${props => props.selected ? MAIN_COLOR : 'transparent'};
-  color: ${props => props.selected ? 'white' : MAIN_COLOR};
+  color: #ffffff;
   font-size: 16px;
   font-family: 'Noto Serif TC', serif;
   cursor: pointer;
@@ -206,7 +225,7 @@ export const CategoryButton = styled.button`
   white-space: nowrap;
 
   &:hover {
-    background-color: ${props => props.selected ? '#B85C38' : '#fff0e6'};
+    background-color: ${props => props.selected ? '#009e93' : '#ffffff'};
   }
 `;
 
@@ -225,12 +244,48 @@ export const StartButton = styled.button`
   font-family: 'Noto Serif TC', serif;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(184, 92, 56, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
   width: 200px;
   
   &:hover {
     transform: translateY(-2px);
-    background-color: #B85C38;
+    background-color: #ffffff;
+    color: ${MAIN_COLOR};
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+`;
+
+export const TransparentStartButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 32px;
+  border-radius: 16px;
+  border-color: ${MAIN_COLOR};
+  background-color: transparent;
+  color: #9ffcea;
+  font-size: 18px;
+  font-weight: 800;
+  font-family: 'Noto Serif TC', serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+  width: 200px;
+  
+  &:hover {
+    transform: translateY(-2px);
+    background-color: #ffffff;
+    color: ${MAIN_COLOR};
   }
   
   &:active {
@@ -357,7 +412,7 @@ export const ToggleLabel = styled.label`
   gap: 12px;
   cursor: pointer;
   font-size: 16px;
-  color: ${MAIN_COLOR};
+  color: #ffffff;
 `;
 
 export const ToggleSwitch = styled.label`
