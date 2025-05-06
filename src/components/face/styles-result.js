@@ -63,7 +63,10 @@ export const AnalysisBlock = styled.div`
 export const BlockTitle = styled.div`
   position: relative;
   margin: 0 auto 20px;
+  background: rgba(0, 158, 148, 0.52);
   padding: 15px 30px;
+  border: 1px solid rgba(159, 252, 233, 0.6);
+  border-radius: 10px;
   color: white;
   font-size: 16px;
   font-weight: 500;
@@ -72,30 +75,6 @@ export const BlockTitle = styled.div`
   min-width: min(200px, 80%);
   max-width: 80%;
   box-sizing: border-box;
-  
-  /* 使用提供的圖片作為背景 */
-  background-image: url('face-frame.png');
-  background-size: 100% 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-  border: none;
-
-  // 裝飾圖示使用絕對定位
-  .title-icon {
-    width: 18px;
-    height: 18px;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-
-    &:first-child {
-      left: 12px;
-    }
-
-    &:last-child {
-      right: 12px;
-    }
-  }
 
   .title-text {
     display: block;
@@ -126,7 +105,7 @@ export const ContentItem = styled.div`
 `;
 
 export const ItemTitle = styled.h4`
-  color: #000000;
+  color:rgb(224, 224, 224);
   font-size: 16px;
   font-weight: 500;
   margin-bottom: 4px;
@@ -135,7 +114,7 @@ export const ItemTitle = styled.h4`
 `;
 
 export const ItemContent = styled.p`
-  color: #414141;
+  color: #9ffcea;
   font-size: 15px;
   line-height: 1.6;
   margin: 0;
@@ -149,7 +128,7 @@ export const Summary = styled.div`
   margin-bottom: 20px;
   font-family: "Noto Serif TC", serif;
   p {
-    color: #666;
+    color: #9ffcea;
     line-height: 1.8;
     margin: 0;
   }

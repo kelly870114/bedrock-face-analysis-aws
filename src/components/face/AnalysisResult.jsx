@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import { X } from "lucide-react";
 import { config } from "../../config";
+import { useTranslation } from "../../i18n";
 import {
   Container,
   ImageContainer,
@@ -12,7 +13,6 @@ import {
   ItemTitle,
   ItemContent,
   Summary,
-  IconImage,
   DownloadButton,
   ResultContainer,
   ModalOverlay,
@@ -25,6 +25,7 @@ import {
 
 // QR Code Modal 組件
 const QRCodeModal = ({ url, isOpen, onClose }) => {
+  const { t } = useTranslation();
   if (!isOpen) return null;
 
   return (
@@ -33,7 +34,7 @@ const QRCodeModal = ({ url, isOpen, onClose }) => {
         <ModalCloseButton onClick={onClose}>
           <X size={20} />
         </ModalCloseButton>
-        <ModalTitle>掃描 QR Code 下載分析結果</ModalTitle>
+        <ModalTitle>{t("faceAnalysis.scanToDownload")}</ModalTitle>
         <QRCodeContainer>
           <svg
             width="100%"
@@ -49,7 +50,7 @@ const QRCodeModal = ({ url, isOpen, onClose }) => {
             }}
           />
         </QRCodeContainer>
-        <ModalText>請在 10 分鐘內完成下載</ModalText>
+        <ModalText>{t("faceAnalysis.downloadExpiration")}</ModalText>
       </ModalContent>
     </ModalOverlay>
   );
@@ -61,6 +62,7 @@ const AnalysisResult = ({
   onRetake,
   isFromFortune = false,
 }) => {
+  const { t } = useTranslation();
   const [showQRCode, setShowQRCode] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -133,7 +135,7 @@ const AnalysisResult = ({
       });
 
       if (!urlResponse.ok) {
-        throw new Error("無法獲取上傳網址");
+        throw new Error(t("common.error"));
       }
 
       const { uploadUrl } = await urlResponse.json();
@@ -158,7 +160,7 @@ const AnalysisResult = ({
       });
 
       if (!uploadResponse.ok) {
-        throw new Error("圖片上傳失敗");
+        throw new Error(t("common.error"));
       }
 
       // 設置下載 URL 並顯示 QR code
@@ -167,7 +169,7 @@ const AnalysisResult = ({
       setShowQRCode(true);
     } catch (error) {
       console.error("處理失敗:", error);
-      alert("圖片處理失敗，請稍後再試");
+      alert(t("common.error"));
     } finally {
       setIsUploading(false);
     }
@@ -183,9 +185,8 @@ const AnalysisResult = ({
       <ResultContainer ref={resultRef}>
         {result.faceShape && (
           <AnalysisBlock>
-            <IconImage src={getIconForBlock(1)} />
             <BlockTitle>
-              <span className="title-text">{result.faceShape.title}</span>
+              <span className="title-text">{t("faceAnalysis.faceShapeAnalysis")}</span>
             </BlockTitle>
             {Object.entries(result.faceShape.content).map(([key, value]) => (
               <ContentItem key={key}>
@@ -198,9 +199,8 @@ const AnalysisResult = ({
 
         {result.features && (
           <AnalysisBlock>
-            <IconImage src={getIconForBlock(2)} />
             <BlockTitle>
-              <span className="title-text">{result.features.title}</span>
+              <span className="title-text">{t("faceAnalysis.featureAnalysis")}</span>
             </BlockTitle>
             {Object.entries(result.features.content).map(([key, value]) => (
               <ContentItem key={key}>
@@ -213,9 +213,8 @@ const AnalysisResult = ({
 
         {result.overall && (
           <AnalysisBlock>
-            <IconImage src={getIconForBlock(3)} />
             <BlockTitle>
-              <span className="title-text">{result.overall.title}</span>
+              <span className="title-text">{t("faceAnalysis.overallAnalysis")}</span>
             </BlockTitle>
             {Object.entries(result.overall.content).map(([key, value]) => (
               <ContentItem key={key}>
@@ -229,7 +228,7 @@ const AnalysisResult = ({
         {result.summary && (
           <Summary>
             <BlockTitle>
-              <span className="title-text">整體評析</span>
+              <span className="title-text">{t("faceAnalysis.summary")}</span>
             </BlockTitle>
             <p>{result.summary}</p>
           </Summary>
@@ -237,16 +236,18 @@ const AnalysisResult = ({
       </ResultContainer>
 
       <DownloadButton onClick={handleDownload} disabled={isUploading}>
-        {isUploading ? "處理中..." : "下載分析結果"}
+        {isUploading ? t("faceAnalysis.processing") : t("faceAnalysis.downloadResult")}
       </DownloadButton>
       {isFromFortune ? (
         <RetakeButton
           onClick={() => (window.location.href = `/fortune/mobile?event=${eventId}`)}
         >
-          重新抽籤
+          {t("fortuneTelling.retryFortune")}
         </RetakeButton>
       ) : (
-        <RetakeButton onClick={onRetake}>重新拍照</RetakeButton>
+        <RetakeButton onClick={onRetake}>
+          {t("faceAnalysis.retakePhoto")}
+        </RetakeButton>
       )}
 
       <QRCodeModal

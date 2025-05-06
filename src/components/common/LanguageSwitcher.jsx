@@ -28,19 +28,19 @@ const LanguageButton = styled.button`
   }
 `;
 
-const LanguageSwitcher = () => {
+const LanguageSwitcher = ({ queryParams }) => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const location = useLocation();
   
   // 獲取當前語言
-  const currentLang = getCurrentLanguage(pathname);
+  const currentLang = getCurrentLanguage(location.pathname);
   
   // 切換語言
   const handleLanguageChange = (newLang) => {
     if (newLang === currentLang) return;
     
     // 將路徑切換為新語言路徑
-    const pathSegments = pathname.split('/').filter(Boolean);
+    const pathSegments = location.pathname.split('/').filter(Boolean);
     
     // 如果當前 URL 的第一段是語言代碼，替換它
     if (Object.keys(SUPPORTED_LANGUAGES).includes(pathSegments[0])) {
@@ -50,7 +50,22 @@ const LanguageSwitcher = () => {
       pathSegments.unshift(newLang);
     }
     
-    navigate(`/${pathSegments.join('/')}`);
+    // 獲取當前 URL 的查詢參數
+    let searchParams = new URLSearchParams(location.search);
+    
+    // 如果提供了額外的查詢參數，將它們合併
+    if (queryParams) {
+      Object.entries(queryParams).forEach(([key, value]) => {
+        if (value) searchParams.set(key, value);
+      });
+    }
+    
+    // 構建新的 URL，包含查詢參數
+    const newPath = `/${pathSegments.join('/')}`;
+    const queryString = searchParams.toString();
+    const newUrl = queryString ? `${newPath}?${queryString}` : newPath;
+    
+    navigate(newUrl);
   };
   
   return (

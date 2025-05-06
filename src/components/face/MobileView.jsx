@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Camera as CameraIcon } from "lucide-react";
 import { config } from "../../config";
+import { useTranslation } from "../../i18n";
+import LanguageSwitcher from "../common/LanguageSwitcher";
+import Camera from "../common/Camera/Camera";
+import AnalysisResult from "./AnalysisResult";
 import {
   PageWrapper,
   ChineseContainer,
@@ -9,7 +13,6 @@ import {
   Corner,
   TitleContainer,
   LogoContainer,
-  AwsLogoContainer,
   Container,
   Content,
   MessageBox,
@@ -18,11 +21,10 @@ import {
   ImageContainer,
   ImageOverlay,
 } from "./styles-mobile";
-import Camera from "../common/Camera/Camera";
-import AnalysisResult from "./AnalysisResult";
 
 const MobileView = () => {
   const [searchParams] = useSearchParams();
+  const { t, language } = useTranslation();
   const [showCamera, setShowCamera] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null);
@@ -32,6 +34,9 @@ const MobileView = () => {
   const [eventInfo, setEventInfo] = useState(null);
   const [analysisId, setAnalysisId] = useState(null);
   const wsRef = useRef(null);
+  
+  // 獲取事件ID
+  const eventId = searchParams.get("event");
 
   // WebSocket connection function
   const connectWebSocket = (analysis_id) => {
@@ -48,7 +53,6 @@ const MobileView = () => {
       console.log("Received WebSocket message:", data);
 
       if (data.status === "completed") {
-        // console.log('Setting analysis result:', data.result);
         setAnalysisResult(data.result);
         setIsAnalyzing(false);
       } else if (data.status === "failed") {
@@ -59,7 +63,7 @@ const MobileView = () => {
 
     ws.onerror = (error) => {
       console.error("WebSocket error:", error);
-      setError("連線錯誤，請重試");
+      setError(t("common.error"));
       setIsAnalyzing(false);
     };
 
@@ -75,10 +79,8 @@ const MobileView = () => {
   useEffect(() => {
     const checkEventAccess = async () => {
       try {
-        const eventId = searchParams.get("event");
-
         if (!eventId) {
-          setError("無效的活動代碼");
+          setError(t("desktop.invalidEventCode"));
           setIsLoading(false);
           return;
         }
@@ -97,7 +99,7 @@ const MobileView = () => {
         const data = await response.json();
 
         if (!data.isAccessible) {
-          setError(data.message || "活動未開放");
+          setError(data.message || t("desktop.eventNotAvailable"));
           setEventInfo({
             name: data.eventName,
             message: data.message,
@@ -113,13 +115,13 @@ const MobileView = () => {
         setIsLoading(false);
       } catch (error) {
         console.error("Error:", error);
-        setError("系統發生錯誤，請稍後再試");
+        setError(t("desktop.systemError"));
         setIsLoading(false);
       }
     };
 
     checkEventAccess();
-  }, [searchParams]);
+  }, [eventId, t]);
 
   // Cleanup WebSocket on component unmount
   useEffect(() => {
@@ -175,7 +177,7 @@ const MobileView = () => {
       connectWebSocket(data.analysis_id);
     } catch (error) {
       console.error("Error:", error);
-      setError(error.message || "分析失敗");
+      setError(error.message || t("common.error"));
       setIsAnalyzing(false);
     }
   };
@@ -201,7 +203,7 @@ const MobileView = () => {
       <Container>
         <Content>
           <MessageBox>
-            <h2>載入中...</h2>
+            <h2>{t("common.loading")}</h2>
           </MessageBox>
         </Content>
       </Container>
@@ -214,7 +216,7 @@ const MobileView = () => {
       <Container>
         <Content>
           <MessageBox>
-            <h2>{eventInfo?.name || "活動資訊"}</h2>
+            <h2>{eventInfo?.name || t("faceAnalysis.title")}</h2>
             <p>{error}</p>
           </MessageBox>
         </Content>
@@ -230,27 +232,30 @@ const MobileView = () => {
         <Corner className="top-right" />
         <Corner className="bottom-left" />
         <Corner className="bottom-right" />
+        
+        {/* 語言切換器 - 確保傳遞 eventId 參數 */}
+        <LanguageSwitcher 
+          currentPath="/face/mobile" 
+          queryParams={{ event: eventId }} 
+        />
 
         <ContentWrapper>
           {!isAnalyzing && !analysisResult && (
             <>
-              <AwsLogoContainer>
-                <img src="/aws-logo.png" alt="AWS" />
-              </AwsLogoContainer>
               <TitleContainer>
-                <img src="/app_title_face_aws.png" alt="面相大師" />
+                <img src="/app_title_face_aws.png" alt={t("faceAnalysis.title")} />
               </TitleContainer>
 
               <LogoContainer>
-                <img src="/mobile_logo_face_aws.png" alt="背景圖片" />
+                <img src="/mobile_logo_face_aws.png" alt={t("faceAnalysis.title")} />
               </LogoContainer>
 
               <CameraButton
                 onClick={() => setShowCamera(true)}
                 disabled={isAnalyzing}
               >
-                <CameraIcon size={24} />
-                開始分析
+                <CameraIcon size={24} color="white" />
+                {t("faceAnalysis.startAnalysis")}
               </CameraButton>
             </>
           )}
@@ -265,8 +270,8 @@ const MobileView = () => {
           {isAnalyzing && (
             <ImageContainer>
               <div className="image-wrapper">
-                <img src={capturedImage} alt="captured" />
-                <ImageOverlay>分析中...</ImageOverlay>
+                <img src={capturedImage} alt={t("faceAnalysis.title")} />
+                <ImageOverlay>{t("faceAnalysis.analyzing")}</ImageOverlay>
               </div>
             </ImageContainer>
           )}
