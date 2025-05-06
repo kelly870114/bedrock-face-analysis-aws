@@ -71,11 +71,11 @@ export const AnalysisBlock = styled.div`
 export const BlockTitle = styled.div`
   position: relative;
   margin: 0 auto 20px;
-  background: #fff7e6;
+  background: rgba(0, 158, 148, 0.52);
   padding: 5px 20px;
-  border: 2px solid ${MAIN_COLOR};
-  border-radius: 20px;
-  color: #000000;
+  border: 1px solid rgba(159, 252, 233, 0.6);
+  border-radius: 10px;
+  color: #ffffff;
   font-size: 16px;
   font-weight: 500;
   font-family: "Noto Serif TC", serif;

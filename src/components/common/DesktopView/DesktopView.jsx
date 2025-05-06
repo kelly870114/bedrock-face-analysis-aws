@@ -21,7 +21,7 @@ const DesktopView = () => {
   const [eventId, setEventId] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [serviceInfo, setServiceInfo] = useState(null); // { type: 'face' | 'fortune', eventInfo: {...} }
+  const [serviceInfo, setServiceInfo] = useState(null);
 
   const handleSubmit = async (serviceType) => {
     if (!eventId.trim()) {

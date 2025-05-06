@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { X } from "lucide-react";
 import {
   PageWrapper,
@@ -8,7 +8,6 @@ import {
   Corner,
   ContentWrapper,
   TitleContainer,
-  AwsLogoContainer,
   LogoContainer,
   FormContainer,
   InputContainer,
@@ -32,9 +31,14 @@ import {
   ToggleSlider
 } from "./styles-fortune-mobile";
 import FortuneResult from "./FortuneNumber";
+import LanguageSwitcher from "../common/LanguageSwitcher";
+import { useTranslation, translateError } from "../../i18n";
 
-const FortuneMobileView = () => {
+const FortuneMobileView = ({ lang }) => {
   const [searchParams] = useSearchParams(); 
+  const { pathname } = useLocation();
+  const { t } = useTranslation(lang);
+  
   const [name, setName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showResult, setShowResult] = useState(false);
@@ -44,6 +48,7 @@ const FortuneMobileView = () => {
   const [existingNumber, setExistingNumber] = useState(null);
   const [useNameAnalysis, setUseNameAnalysis] = useState(true); // 默認開啟姓名學分析
   const [instanceKey, setInstanceKey] = useState(Date.now()); // 用於強制重新渲染FortuneResult
+  const [error, setError] = useState("");
 
   // 從 URL 參數讀取默認的姓名學分析設置和重置信息
   useEffect(() => {
@@ -61,6 +66,7 @@ const FortuneMobileView = () => {
       setShowResult(false);
       setExistingNumber(null);
       setFortuneNumber("");
+      setError("");
       
       // 更新URL，移除reset參數
       const url = new URL(window.location.href);
@@ -72,15 +78,16 @@ const FortuneMobileView = () => {
   const handleStartFortune = () => {
     // 檢查是否選擇了類別
     if (!selectedCategory) {
-      alert("請選擇一個籤詩類別");
+      setError(t("fortuneTelling.noCategoryError"));
       return;
     }
     
     setIsLoading(true);
+    setError("");
     
     // 如果啟用姓名學分析但沒有填寫姓名，使用預設值
     if (useNameAnalysis && !name.trim()) {
-      setName("訪客");
+      setName(t("fortuneTelling.guestName", { defaultValue: "訪客" }));
     }
     
     // 清空既有籤號
@@ -100,10 +107,11 @@ const FortuneMobileView = () => {
     const number = parseInt(fortuneNumber);
     if (number >= 1 && number <= 24) {
       setIsLoading(true);
+      setError("");
       
       // 如果啟用姓名學分析但沒有填寫姓名，使用預設值
       if (useNameAnalysis && !name.trim()) {
-        setName("訪客");
+        setName(t("fortuneTelling.guestName", { defaultValue: "訪客" }));
       }
       
       // 設置已有籤號
@@ -121,7 +129,7 @@ const FortuneMobileView = () => {
         setIsLoading(false);
       }, 50);
     } else {
-      alert("請輸入 1-24 之間的籤號");
+      setError(t("fortuneTelling.invalidFortuneNumber", { defaultValue: "請輸入 1-24 之間的籤號" }));
     }
   };
 
@@ -140,25 +148,23 @@ const FortuneMobileView = () => {
         <Corner className="bottom-right" />
 
         <ContentWrapper>
+          <LanguageSwitcher />
+          
           {!showResult ? (
             <>
-              <AwsLogoContainer>
-                <img src="/aws-logo.png" alt="AWS" />
-              </AwsLogoContainer>
-            
               <TitleContainer>
-                <img src="/app_title_fortune_aws.png" alt="解籤大師" />
+                <img src="/app_title_fortune_aws.png" alt={t("fortuneTelling.title")} />
               </TitleContainer>
 
               <LogoContainer>
-                <img src="/mobile_logo_fortune_aws.png" alt="解籤大師圖示" />
+                <img src="/mobile_logo_fortune_aws.png" alt={t("fortuneTelling.title")} />
               </LogoContainer>
 
               <FormContainer>
                 {/* 姓名學分析開關 */}
                 <ToggleContainer>
                   <ToggleLabel>
-                    結合姓名學分析
+                    {t("fortuneTelling.nameAnalysis")}
                     <ToggleSwitch>
                       <ToggleInput
                         type="checkbox"
@@ -176,7 +182,7 @@ const FortuneMobileView = () => {
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="請輸入姓名"
+                      placeholder={t("fortuneTelling.enterName")}
                       maxLength={20}
                     />
                   </InputContainer>
@@ -188,46 +194,61 @@ const FortuneMobileView = () => {
                     selected={selectedCategory === "love"}
                     onClick={() => setSelectedCategory("love")}
                   >
-                    愛情
+                    {t("fortuneTelling.category.love")}
                   </CategoryButton>
                   <CategoryButton
                     selected={selectedCategory === "career"}
                     onClick={() => setSelectedCategory("career")}
                   >
-                    事業
+                    {t("fortuneTelling.category.career")}
                   </CategoryButton>
                   <CategoryButton
                     selected={selectedCategory === "wealth"}
                     onClick={() => setSelectedCategory("wealth")}
                   >
-                    財運
+                    {t("fortuneTelling.category.wealth")}
                   </CategoryButton>
                   <CategoryButton
                     selected={selectedCategory === "family"}
                     onClick={() => setSelectedCategory("family")}
                   >
-                    家庭
+                    {t("fortuneTelling.category.family")}
                   </CategoryButton>
                   <CategoryButton
                     selected={selectedCategory === "study"}
                     onClick={() => setSelectedCategory("study")}
                   >
-                    學業
+                    {t("fortuneTelling.category.study")}
                   </CategoryButton>
                   <CategoryButton
                     selected={selectedCategory === "travel"}
                     onClick={() => setSelectedCategory("travel")}
                   >
-                    旅遊
+                    {t("fortuneTelling.category.travel")}
                   </CategoryButton>
                 </ButtonGroup>
+                
+                {error && (
+                  <div style={{ 
+                    color: 'red', 
+                    backgroundColor: '#fee', 
+                    padding: '10px', 
+                    margin: '10px 0', 
+                    borderRadius: '5px',
+                    textAlign: 'center',
+                    width: '90%',
+                    maxWidth: '400px'
+                  }}>
+                    {error}
+                  </div>
+                )}
                 
                 {/* 開始抽籤按鈕 */}
                 <StartButton
                   disabled={!selectedCategory || isLoading}
                   onClick={handleStartFortune}
                 >
-                  {isLoading ? "請稍候..." : "開始抽籤"}
+                  {isLoading ? t("common.loading") : t("fortuneTelling.startFortuneTelling")}
                 </StartButton>
 
                 {/* 已有籤號按鈕 */}
@@ -235,7 +256,7 @@ const FortuneMobileView = () => {
                   disabled={!selectedCategory || isLoading}
                   onClick={() => setShowNumberModal(true)}
                 >
-                  已有籤號
+                  {t("fortuneTelling.hasFortuneNumber")}
                 </TransparentStartButton>
               </FormContainer>
             </>
@@ -246,6 +267,7 @@ const FortuneMobileView = () => {
               category={selectedCategory}
               existingNumber={existingNumber}
               useNameAnalysis={useNameAnalysis}
+              lang={lang} // 傳遞語言設定給子組件
             />
           )}
         </ContentWrapper>
@@ -257,7 +279,7 @@ const FortuneMobileView = () => {
             <ModalCloseButton onClick={() => setShowNumberModal(false)}>
               <X size={20} />
             </ModalCloseButton>
-            <ModalTitle>選擇籤號</ModalTitle>
+            <ModalTitle>{t("fortuneTelling.chooseFortuneNumber")}</ModalTitle>
 
             {/* 數字輸入框 */}
             <NumberInput
@@ -266,7 +288,7 @@ const FortuneMobileView = () => {
               max="24"
               value={fortuneNumber}
               onChange={(e) => setFortuneNumber(e.target.value)}
-              placeholder="1-24"
+              placeholder={t("fortuneTelling.fortuneNumberPlaceholder")}
             />
 
             {/* 數字按鈕 */}
@@ -282,6 +304,19 @@ const FortuneMobileView = () => {
               ))}
             </NumberButtonGrid>
 
+            {error && (
+              <div style={{ 
+                color: 'red', 
+                backgroundColor: '#fee', 
+                padding: '10px', 
+                margin: '10px 0', 
+                borderRadius: '5px',
+                textAlign: 'center'
+              }}>
+                {error}
+              </div>
+            )}
+
             <StartButton
               onClick={handleExistingNumber}
               disabled={
@@ -291,7 +326,7 @@ const FortuneMobileView = () => {
                 parseInt(fortuneNumber) > 24
               }
             >
-              {isLoading ? "請稍候..." : "確定"}
+              {isLoading ? t("common.loading") : t("fortuneTelling.confirm")}
             </StartButton>
           </ModalContent>
         </ModalOverlay>
@@ -300,7 +335,7 @@ const FortuneMobileView = () => {
       {isLoading && (
         <ModalOverlay>
           <div style={{ color: 'white', fontSize: '20px', fontFamily: 'Noto Serif TC, serif' }}>
-            載入中...
+            {t("common.loading")}
           </div>
         </ModalOverlay>
       )}
