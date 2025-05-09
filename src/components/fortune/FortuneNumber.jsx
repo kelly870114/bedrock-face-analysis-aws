@@ -4,6 +4,7 @@ import { config } from "../../config";
 import FortuneInterpret from "./FortuneInterpret";
 import TechFortunePoem from "./TechFortunePoem";
 import { useTranslation, translateError } from "../../i18n";
+import html2canvas from "html2canvas";
 
 const MAIN_COLOR = "#009e93";
 
@@ -179,6 +180,8 @@ const FortuneNumber = ({
   const [fortunePoem, setFortunePoem] = useState(null);
   const [fortuneAnalysisId, setFortuneAnalysisId] = useState(null);
   const [error, setError] = useState(null);
+  const [isPrinting, setIsPrinting] = useState(false); // 新增列印狀態
+  const fortunePoemRef = useRef(null); // 新增引用TechFortunePoem的ref
 
   // 創建唯一ID以識別該組件實例
   const instanceIdRef = useRef(
@@ -195,6 +198,148 @@ const FortuneNumber = ({
     }
     return Math.floor(Math.random() * 24) + 1;
   });
+
+  // 新增列印籤詩功能
+  const handlePrintFortune = async () => {
+    if (!fortunePoemRef.current) {
+      console.error("找不到籤詩組件的引用");
+      return;
+    }
+  
+    try {
+      setIsPrinting(true);
+      
+      // 等待一小段時間確保渲染完成
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // 直接使用整個組件，不再嘗試找特定元素
+      const fullCanvas = await html2canvas(fortunePoemRef.current, {
+        scale: 2, // 提高解析度
+        backgroundColor: null, // 透明背景
+        logging: true, // 開啟日誌以便調試
+        useCORS: true,
+        allowTaint: true,
+        width: fortunePoemRef.current.offsetWidth,
+        height: fortunePoemRef.current.offsetHeight,
+        x: 0,
+        y: 0,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: document.documentElement.offsetWidth,
+        windowHeight: document.documentElement.offsetHeight
+      });
+      
+      // 列印頁面設置
+      const printWidth = 34; // cm
+      const printHeight = 11; // cm
+      
+      // 創建列印視窗
+      const printWindow = window.open('', '_blank');
+      
+      if (!printWindow) {
+        alert("無法開啟列印視窗，請檢查您的瀏覽器設定是否允許彈出視窗。");
+        setIsPrinting(false);
+        return;
+      }
+      
+      // 設定內容和樣式，確保尺寸正確
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>籤詩列印</title>
+            <style>
+              @page {
+                size: ${printWidth}cm ${printHeight}cm;
+                margin: 0;
+              }
+              
+              body { 
+                margin: 0; 
+                padding: 0;
+                background-color: #000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                overflow: hidden;
+              }
+              
+              .print-container {
+                width: ${printWidth}cm;
+                height: ${printHeight}cm;
+                position: relative;
+                overflow: hidden;
+              }
+              
+              .print-fortune {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                display: block;
+              }
+              
+              @media print {
+                body {
+                  background-color: transparent;
+                }
+                
+                .print-container {
+                  page-break-inside: avoid;
+                  page-break-before: auto;
+                  page-break-after: auto;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="print-container">
+              <img src="${fullCanvas.toDataURL('image/png')}" class="print-fortune" />
+            </div>
+            <script>
+              // 確保圖片完全載入後再列印
+              window.onload = function() { 
+                const img = document.querySelector('.print-fortune');
+                if (img.complete) {
+                  setTimeout(function() {
+                    window.print();
+                    setTimeout(function() {
+                      window.close();
+                    }, 500);
+                  }, 300);
+                } else {
+                  img.onload = function() {
+                    setTimeout(function() {
+                      window.print();
+                      setTimeout(function() {
+                        window.close();
+                      }, 500);
+                    }, 300);
+                  };
+                }
+              }
+            </script>
+          </body>
+        </html>
+      `);
+      
+      printWindow.document.close();
+      
+      // 當列印窗口關閉時
+      printWindow.onafterprint = () => {
+        setIsPrinting(false);
+      };
+      
+      // 如果用戶取消列印，也要重置狀態
+      setTimeout(() => {
+        setIsPrinting(false);
+      }, 5000);
+      
+    } catch (error) {
+      console.error("列印籤詩時出錯:", error);
+      alert("列印籤詩時發生錯誤，請稍後再試");
+      setIsPrinting(false);
+    }
+  };
 
   // 初始化籤詩數據 - 使用單獨的useEffect確保只執行一次
   useEffect(() => {
@@ -373,7 +518,7 @@ const FortuneNumber = ({
 
   // 重新抽籤處理
   const handleReset = () => {
-    if (isInterpreting || isLoadingPoem) return;
+    if (isInterpreting || isLoadingPoem || isPrinting) return;
 
     // 使用URL參數重新載入頁面
     const currentUrl = new URL(window.location.href);
@@ -423,13 +568,14 @@ const FortuneNumber = ({
       <ErrorMessage />
 
       {isLoadingPoem ? (
-        <LoadingOverlay>籤詩生成中...</LoadingOverlay>
+        <LoadingOverlay>{t("fortuneTelling.generatingPoem", "籤詩生成中...")}</LoadingOverlay>
       ) : (
         <>
           {useNameAnalysis && fortunePoem ? (
             // 使用新的TechFortunePoem組件替換FortuneTextContainer
             <TechFortunePoem
-              userName={user_name || "訪客"}
+              ref={fortunePoemRef} // 新增ref
+              userName={user_name || t("fortuneTelling.guestName", "訪客")}
               poemContent={fortunePoem}
             />
           ) : (
@@ -447,17 +593,30 @@ const FortuneNumber = ({
           )}
 
           <ButtonContainer>
+            {/* 新增列印籤詩按鈕，只在使用姓名學分析時顯示 */}
+            {useNameAnalysis && fortunePoem && (
+              <InterpretButton
+                onClick={handlePrintFortune}
+                disabled={isPrinting || isInterpreting}
+              >
+                {isPrinting 
+                  ? t("fortuneTelling.printing", "準備列印中...") 
+                  : t("fortuneTelling.printFortune", "列印籤詩")}
+              </InterpretButton>
+            )}
+            
             <InterpretButton
               onClick={handleInterpret}
-              disabled={isInterpreting || isLoadingPoem}
+              disabled={isInterpreting || isPrinting}
             >
               {isInterpreting
                 ? t("fortuneTelling.interpreting")
                 : t("fortuneTelling.startInterpreting")}
             </InterpretButton>
+            
             <InterpretButton
               onClick={handleReset}
-              disabled={isInterpreting || isLoadingPoem}
+              disabled={isInterpreting || isPrinting}
               style={{
                 backgroundColor: "transparent",
                 color: MAIN_COLOR,
@@ -472,6 +631,10 @@ const FortuneNumber = ({
 
       {isInterpreting && (
         <LoadingOverlay>{t("fortuneTelling.interpreting")}</LoadingOverlay>
+      )}
+      
+      {isPrinting && (
+        <LoadingOverlay>{t("fortuneTelling.printing", "準備列印中...")}</LoadingOverlay>
       )}
     </Container>
   );

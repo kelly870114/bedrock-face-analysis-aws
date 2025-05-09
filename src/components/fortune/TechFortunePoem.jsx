@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
 // 整體容器 - 使用固定比例
@@ -71,32 +71,35 @@ const PoemContentSection = styled.div`
   top: 22%;
   left: 50%;
   transform: translateX(-50%);
-  width: 70%;
+  width: 70%; 
   height: 40%;
   background-color: rgba(14, 27, 43, 0.9);
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible; // 更改為 visible，確保內容不被截斷
   border: 2px solid rgba(46, 182, 177, 0.8);
   box-shadow: 0 0 15px rgba(46, 182, 177, 0.4);
-
 `;
 
 // 籤詩文字容器
 const PoemTextContainer = styled.div`
   position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; // 水平居中
+  align-items: center; // 垂直居中
   height: 100%;
+  width: 100%;
   z-index: 3;
-  padding: 5px;
+  padding: 5px 0; // 只設置上下 padding
 `;
 
 // 垂直籤詩行
 const VerticalPoemLine = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 0 8px; // 增加行間距
+  margin: 0 5px; // 減少行間距，確保所有行能放入
+  height: 90%; // 稍微縮小高度以確保不溢出
+  justify-content: center;
+  width: auto; // 自動寬度根據內容
 `;
 
 // 籤詩字元
@@ -104,10 +107,11 @@ const PoemCharacter = styled.span`
   color: white;
   font-family: "Noto Serif TC", serif;
   font-size: 22px;
-  line-height: 1.4; // 調整行高
+  line-height: 1.4;
   text-align: center;
-  margin: 1px 0; // 減少字元間的垂直間距
-  font-weight: 500; // 增加字體粗細
+  margin: 1px 0;
+  font-weight: 500;
+  white-space: nowrap; // 防止字元換行
 `;
 
 // 底部 Powered By 區域
@@ -159,7 +163,10 @@ const WishSection = styled.div`
   }
 `;
 
-const TechFortunePoem = ({ userName = "", poemContent = "" }) => {
+// 使用 forwardRef 包裝原始組件
+const TechFortunePoem = forwardRef((props, ref) => {
+  const { userName = "", poemContent = "" } = props;
+  
   // 將詩句分成多行，七言絕句一般是4行7字
   const preparePoem = (content) => {
     if (!content) return [];
@@ -185,7 +192,7 @@ const TechFortunePoem = ({ userName = "", poemContent = "" }) => {
   const poemLines = preparePoem(poemContent);
 
   return (
-    <TechFortunePoemContainer>
+    <TechFortunePoemContainer ref={ref}>
       {/* AWS Logo */}
       <LogoSection>
         <img src="/aws-logo.png" alt="AWS Logo" />
@@ -233,6 +240,9 @@ const TechFortunePoem = ({ userName = "", poemContent = "" }) => {
       </WishSection>
     </TechFortunePoemContainer>
   );
-};
+});
+
+// 添加顯示名稱
+TechFortunePoem.displayName = 'TechFortunePoem';
 
 export default TechFortunePoem;

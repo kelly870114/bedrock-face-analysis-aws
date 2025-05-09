@@ -100,5 +100,7 @@ export default {
       nameAnalysis: "Include Name Analysis",
       personalFortune: "'s Personal Fortune Poem",
       generatingPoem: "Generating poem...",
+      printFortune: "Print Your Poem",
+      printing: "Printing..."
     },
   };
