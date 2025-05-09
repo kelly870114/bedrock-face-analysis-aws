@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { config } from "../../config";
 import FortuneInterpret from "./FortuneInterpret";
+import TechFortunePoem from "./TechFortunePoem";
 import { useTranslation, translateError } from "../../i18n";
 
 const MAIN_COLOR = "#009e93";
@@ -422,19 +423,15 @@ const FortuneNumber = ({
       <ErrorMessage />
 
       {isLoadingPoem ? (
-        <LoadingOverlay>{t("fortuneTelling.generatingPoem")}</LoadingOverlay>
+        <LoadingOverlay>籤詩生成中...</LoadingOverlay>
       ) : (
         <>
           {useNameAnalysis && fortunePoem ? (
-            // 當使用姓名學分析時顯示文本籤詩
-            <FortuneTextContainer>
-              <FortuneTitle>
-                {user_name
-                  ? `${user_name}${t("fortuneTelling.personalFortune")}`
-                  : t("fortuneTelling.randomFortune")}
-              </FortuneTitle>
-              <FortuneText>{fortunePoem}</FortuneText>
-            </FortuneTextContainer>
+            // 使用新的TechFortunePoem組件替換FortuneTextContainer
+            <TechFortunePoem
+              userName={user_name || "訪客"}
+              poemContent={fortunePoem}
+            />
           ) : (
             // 當不使用姓名學分析時顯示圖片籤詩
             <FortuneImageContainer>
