@@ -101,6 +101,7 @@ export default {
       personalFortune: "'s Personal Fortune Poem",
       generatingPoem: "Generating poem...",
       printFortune: "Print Your Poem",
+      printDevMode: "Printing Dev Mode",
       printing: "Printing..."
     },
   };

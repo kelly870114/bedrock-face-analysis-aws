@@ -7,7 +7,7 @@ const TechFortunePoemContainer = styled.div`
   max-width: 250px;
   margin: 0 auto 40px;
   position: relative;
-  aspect-ratio: 5 / 16; // 固定長寬比為9:16，類似手機螢幕比例
+  aspect-ratio: 5 / 14; // 固定長寬比為9:16，類似手機螢幕比例
   background-image: url('/tech-fortune-bg.png');
   background-size: cover;
   background-position: center;
@@ -32,7 +32,7 @@ const LogoSection = styled.div`
 // 雲端開運運勢標題
 const TitleSection = styled.div`
   position: absolute;
-  top: 15%;
+  top: 13%;
   left: 50%;
   transform: translateX(-50%);
   width: 80%;
@@ -68,7 +68,7 @@ const TitleSection = styled.div`
 // 主要籤詩內容邊框區域
 const PoemContentSection = styled.div`
   position: absolute;
-  top: 22%;
+  top: 21%;
   left: 50%;
   transform: translateX(-50%);
   width: 70%; 
@@ -117,7 +117,7 @@ const PoemCharacter = styled.span`
 // 底部 Powered By 區域
 const FooterSection = styled.div`
   position: absolute;
-  bottom: 33%;
+  bottom: 34%;
   left: 0;
   right: 0;
   text-align: center;
@@ -132,7 +132,7 @@ const FooterSection = styled.div`
 // 底部願望區域
 const WishSection = styled.div`
   position: absolute;
-  bottom: 5%;
+  bottom: 4%;
   left: 50%;
   transform: translateX(-50%);
   width: 85%;

@@ -200,144 +200,380 @@ const FortuneNumber = ({
   });
 
   // 新增列印籤詩功能
-  const handlePrintFortune = async () => {
+  // 快速列印函數 - 使用預設最佳值
+  const handleQuickPrint = async () => {
     if (!fortunePoemRef.current) {
       console.error("找不到籤詩組件的引用");
       return;
     }
-  
+
     try {
-      setIsPrinting(true);
-      
-      // 等待一小段時間確保渲染完成
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      // 直接使用整個組件，不再嘗試找特定元素
+      // 不再設置全局isPrinting，而是使用局部變量
+      const printingIndicator = document.createElement("div");
+      printingIndicator.style.position = "fixed";
+      printingIndicator.style.bottom = "20px";
+      printingIndicator.style.right = "20px";
+      printingIndicator.style.background = "rgba(0,0,0,0.7)";
+      printingIndicator.style.color = "white";
+      printingIndicator.style.padding = "10px";
+      printingIndicator.style.borderRadius = "5px";
+      printingIndicator.style.zIndex = "9999";
+      printingIndicator.textContent = "準備列印中...";
+      document.body.appendChild(printingIndicator);
+
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
       const fullCanvas = await html2canvas(fortunePoemRef.current, {
-        scale: 2, // 提高解析度
-        backgroundColor: null, // 透明背景
-        logging: true, // 開啟日誌以便調試
+        scale: 2,
+        backgroundColor: null,
+        logging: false, // 減少日誌輸出
         useCORS: true,
         allowTaint: true,
         width: fortunePoemRef.current.offsetWidth,
         height: fortunePoemRef.current.offsetHeight,
-        x: 0,
-        y: 0,
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: document.documentElement.offsetWidth,
-        windowHeight: document.documentElement.offsetHeight
       });
-      
-      // 列印頁面設置
-      const printWidth = 34; // cm
-      const printHeight = 11; // cm
-      
-      // 創建列印視窗
-      const printWindow = window.open('', '_blank');
-      
+
+      const printWidth = 21; // cm
+      const printHeight = 7.5; // cm
+
+      const printWindow = window.open("", "_blank");
+
       if (!printWindow) {
         alert("無法開啟列印視窗，請檢查您的瀏覽器設定是否允許彈出視窗。");
-        setIsPrinting(false);
+        document.body.removeChild(printingIndicator);
         return;
       }
-      
-      // 設定內容和樣式，確保尺寸正確
+
+      // 使用預設最佳值 - 縮放85%和垂直位置8%
       printWindow.document.write(`
-        <html>
-          <head>
-            <title>籤詩列印</title>
-            <style>
-              @page {
-                size: ${printWidth}cm ${printHeight}cm;
-                margin: 0;
+      <html>
+        <head>
+          <title>籤詩列印</title>
+          <style>
+            @page {
+              size: ${printWidth}cm ${printHeight}cm landscape;
+              margin: 0;
+            }
+            
+            body { 
+              margin: 0; 
+              padding: 0;
+              background-color: #000;
+              overflow: hidden;
+            }
+            
+            .print-container {
+              position: relative;
+              width: 100%;
+              height: 100vh;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+            
+            .print-fortune {
+              max-width: 100%;
+              max-height: 85vh; /* 縮放85% */
+              object-fit: contain;
+              transform: rotate(180deg) translateY(8%); /* 垂直位置8% */
+            }
+            
+            @media print {
+              body {
+                background-color: transparent;
               }
-              
-              body { 
-                margin: 0; 
-                padding: 0;
-                background-color: #000;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                overflow: hidden;
-              }
-              
-              .print-container {
-                width: ${printWidth}cm;
-                height: ${printHeight}cm;
-                position: relative;
-                overflow: hidden;
-              }
-              
-              .print-fortune {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                display: block;
-              }
-              
-              @media print {
-                body {
-                  background-color: transparent;
-                }
-                
-                .print-container {
-                  page-break-inside: avoid;
-                  page-break-before: auto;
-                  page-break-after: auto;
-                }
-              }
-            </style>
-          </head>
-          <body>
-            <div class="print-container">
-              <img src="${fullCanvas.toDataURL('image/png')}" class="print-fortune" />
-            </div>
-            <script>
-              // 確保圖片完全載入後再列印
-              window.onload = function() { 
-                const img = document.querySelector('.print-fortune');
-                if (img.complete) {
+            }
+          </style>
+        </head>
+        <body>
+          <div class="print-container">
+            <img src="${fullCanvas.toDataURL(
+              "image/png"
+            )}" class="print-fortune">
+          </div>
+          <script>
+            window.onload = function() { 
+              const img = document.querySelector('.print-fortune');
+              if (img.complete) {
+                setTimeout(function() {
+                  window.print();
+                  setTimeout(function() {
+                    window.close();
+                  }, 500);
+                }, 300);
+              } else {
+                img.onload = function() {
                   setTimeout(function() {
                     window.print();
                     setTimeout(function() {
                       window.close();
                     }, 500);
                   }, 300);
-                } else {
-                  img.onload = function() {
-                    setTimeout(function() {
-                      window.print();
-                      setTimeout(function() {
-                        window.close();
-                      }, 500);
-                    }, 300);
-                  };
-                }
+                };
               }
-            </script>
-          </body>
-        </html>
-      `);
-      
+            }
+          </script>
+        </body>
+      </html>
+    `);
+
       printWindow.document.close();
-      
-      // 當列印窗口關閉時
+
+      // 當列印視窗關閉時，移除指示器
       printWindow.onafterprint = () => {
-        setIsPrinting(false);
+        document.body.removeChild(printingIndicator);
       };
-      
-      // 如果用戶取消列印，也要重置狀態
+
+      // 超時處理，確保指示器最終會消失
       setTimeout(() => {
-        setIsPrinting(false);
+        if (document.body.contains(printingIndicator)) {
+          document.body.removeChild(printingIndicator);
+        }
       }, 5000);
-      
     } catch (error) {
       console.error("列印籤詩時出錯:", error);
       alert("列印籤詩時發生錯誤，請稍後再試");
-      setIsPrinting(false);
+      // 移除可能存在的指示器
+      const existingIndicator = document.querySelector("#printing-indicator");
+      if (existingIndicator) {
+        document.body.removeChild(existingIndicator);
+      }
+    }
+  };
+
+  // 開發者模式列印函數 - 提供調整控制
+  const handleDevModePrint = async () => {
+    // 這裡使用您之前提供的代碼，帶有控制面板的版本
+    if (!fortunePoemRef.current) {
+      console.error("找不到籤詩組件的引用");
+      return;
+    }
+
+    try {
+      // 使用局部指示器代替全局狀態
+      const printingIndicator = document.createElement("div");
+      printingIndicator.style.position = "fixed";
+      printingIndicator.style.bottom = "20px";
+      printingIndicator.style.right = "20px";
+      printingIndicator.style.background = "rgba(0,0,0,0.7)";
+      printingIndicator.style.color = "white";
+      printingIndicator.style.padding = "10px";
+      printingIndicator.style.borderRadius = "5px";
+      printingIndicator.style.zIndex = "9999";
+      printingIndicator.textContent = "開發者模式：列印調整中...";
+      document.body.appendChild(printingIndicator);
+
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      const fullCanvas = await html2canvas(fortunePoemRef.current, {
+        scale: 2,
+        backgroundColor: null,
+        logging: true,
+        useCORS: true,
+        allowTaint: true,
+        width: fortunePoemRef.current.offsetWidth,
+        height: fortunePoemRef.current.offsetHeight,
+      });
+
+      const printWidth = 21; // cm
+      const printHeight = 7.5; // cm
+
+      const printWindow = window.open("", "_blank");
+
+      if (!printWindow) {
+        alert("無法開啟列印視窗，請檢查您的瀏覽器設定是否允許彈出視窗。");
+        document.body.removeChild(printingIndicator);
+        return;
+      }
+
+      // 開發者模式 - 帶有控制面板，預設值設為最佳值
+      printWindow.document.write(`
+      <html>
+        <head>
+          <title>籤詩列印 (開發者模式)</title>
+          <style>
+            @page {
+              size: ${printWidth}cm ${printHeight}cm landscape;
+              margin: 0;
+            }
+            
+            body { 
+              margin: 0; 
+              padding: 0;
+              background-color: #000;
+              color: white;
+              font-family: Arial, sans-serif;
+              min-height: 100vh;
+              overflow: hidden;
+            }
+            
+            .print-container {
+              position: relative;
+              width: 100%;
+              height: 100vh;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+            
+            .print-fortune {
+              max-width: 100%;
+              max-height: 85vh; /* 默認值設為85% */
+              object-fit: contain;
+              transform: rotate(180deg) translateY(8%); /* 默認值設為8% */
+            }
+            
+            #controls {
+              position: fixed;
+              top: 10px;
+              left: 10px;
+              background: rgba(0,0,0,0.7);
+              padding: 15px;
+              border-radius: 8px;
+              z-index: 1000;
+            }
+            
+            .control-group {
+              margin-bottom: 15px;
+            }
+            
+            label {
+              display: block;
+              margin-bottom: 5px;
+              font-size: 14px;
+            }
+            
+            input[type="range"] {
+              width: 200px;
+            }
+            
+            .value-display {
+              display: inline-block;
+              width: 40px;
+              text-align: right;
+              margin-left: 8px;
+            }
+            
+            button {
+              background: #009e93;
+              color: white;
+              border: none;
+              padding: 8px 15px;
+              border-radius: 4px;
+              cursor: pointer;
+              margin-right: 10px;
+            }
+            
+            @media print {
+              #controls {
+                display: none;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div id="controls">
+            <div class="control-group">
+              <label>縮放大小 <span id="scale-value" class="value-display">85%</span></label>
+              <input type="range" id="scale" min="70" max="130" value="85">
+            </div>
+            <div class="control-group">
+              <label>垂直位置 <span id="position-value" class="value-display">8%</span></label>
+              <input type="range" id="position" min="-30" max="30" value="8">
+            </div>
+            <div class="control-group">
+              <label>旋轉 <span id="rotation-value" class="value-display">180°</span></label>
+              <input type="range" id="rotation" min="0" max="180" value="180" step="180">
+            </div>
+            <div>
+              <button id="print-btn">確認並列印</button>
+              <button id="close-btn">取消</button>
+            </div>
+          </div>
+          
+          <div class="print-container">
+            <img src="${fullCanvas.toDataURL(
+              "image/png"
+            )}" class="print-fortune" id="fortune-img">
+          </div>
+          
+          <script>
+            // 獲取控制元素和圖像
+            const scaleInput = document.getElementById('scale');
+            const positionInput = document.getElementById('position');
+            const rotationInput = document.getElementById('rotation');
+            const scaleValue = document.getElementById('scale-value');
+            const positionValue = document.getElementById('position-value');
+            const rotationValue = document.getElementById('rotation-value');
+            const printBtn = document.getElementById('print-btn');
+            const closeBtn = document.getElementById('close-btn');
+            const img = document.getElementById('fortune-img');
+            
+            // 更新圖像樣式的函數
+            function updateImageStyle() {
+              const scale = scaleInput.value;
+              const position = positionInput.value;
+              const rotation = rotationInput.value;
+              
+              img.style.transform = \`rotate(\${rotation}deg) translateY(\${position}%)\`;
+              img.style.maxHeight = \`\${scale}vh\`;
+              
+              scaleValue.textContent = \`\${scale}%\`;
+              positionValue.textContent = \`\${position}%\`;
+              rotationValue.textContent = \`\${rotation}°\`;
+            }
+            
+            // 添加事件監聽器
+            scaleInput.addEventListener('input', updateImageStyle);
+            positionInput.addEventListener('input', updateImageStyle);
+            rotationInput.addEventListener('input', updateImageStyle);
+            
+            // 列印按鈕
+            printBtn.addEventListener('click', function() {
+              document.getElementById('controls').style.display = 'none';
+              setTimeout(function() {
+                window.print();
+                setTimeout(function() {
+                  document.getElementById('controls').style.display = 'block';
+                }, 500);
+              }, 300);
+            });
+            
+            // 關閉按鈕
+            closeBtn.addEventListener('click', function() {
+              window.close();
+            });
+            
+            // 初始設定
+            updateImageStyle();
+          </script>
+        </body>
+      </html>
+    `);
+
+      printWindow.document.close();
+
+      // 當開發者模式窗口關閉時，移除指示器
+      printWindow.onunload = () => {
+        if (document.body.contains(printingIndicator)) {
+          document.body.removeChild(printingIndicator);
+        }
+      };
+
+      // 超時處理
+      setTimeout(() => {
+        if (document.body.contains(printingIndicator)) {
+          document.body.removeChild(printingIndicator);
+        }
+      }, 60000); // 開發者模式給1分鐘時間調整
+    } catch (error) {
+      console.error("列印籤詩時出錯:", error);
+      alert("列印籤詩時發生錯誤，請稍後再試");
+      // 移除可能存在的指示器
+      const existingIndicator = document.querySelector("#printing-indicator");
+      if (existingIndicator) {
+        document.body.removeChild(existingIndicator);
+      }
     }
   };
 
@@ -568,7 +804,9 @@ const FortuneNumber = ({
       <ErrorMessage />
 
       {isLoadingPoem ? (
-        <LoadingOverlay>{t("fortuneTelling.generatingPoem", "籤詩生成中...")}</LoadingOverlay>
+        <LoadingOverlay>
+          {t("fortuneTelling.generatingPoem", "籤詩生成中...")}
+        </LoadingOverlay>
       ) : (
         <>
           {useNameAnalysis && fortunePoem ? (
@@ -595,16 +833,32 @@ const FortuneNumber = ({
           <ButtonContainer>
             {/* 新增列印籤詩按鈕，只在使用姓名學分析時顯示 */}
             {useNameAnalysis && fortunePoem && (
-              <InterpretButton
-                onClick={handlePrintFortune}
-                disabled={isPrinting || isInterpreting}
-              >
-                {isPrinting 
-                  ? t("fortuneTelling.printing", "準備列印中...") 
-                  : t("fortuneTelling.printFortune", "列印籤詩")}
-              </InterpretButton>
+              <>
+                <InterpretButton
+                  onClick={handleQuickPrint} // 使用快速列印功能
+                  disabled={isPrinting}
+                >
+                  {isPrinting
+                    ? t("fortuneTelling.printing", "準備列印中...")
+                    : t("fortuneTelling.printFortune", "列印籤詩")}
+                </InterpretButton>
+
+                {/* 新增開發者模式按鈕 */}
+                <InterpretButton
+                  onClick={handleDevModePrint}
+                  disabled={isPrinting}
+                  style={{
+                    backgroundColor: "transparent",
+                    color: "#009e93",
+                    border: "1px solid #009e93",
+                    fontSize: "14px", // 較小字體，表示次要功能
+                  }}
+                >
+                  {t("fortuneTelling.printDevMode", "列印 (開發者模式)")}
+                </InterpretButton>
+              </>
             )}
-            
+
             <InterpretButton
               onClick={handleInterpret}
               disabled={isInterpreting || isPrinting}
@@ -613,7 +867,7 @@ const FortuneNumber = ({
                 ? t("fortuneTelling.interpreting")
                 : t("fortuneTelling.startInterpreting")}
             </InterpretButton>
-            
+
             <InterpretButton
               onClick={handleReset}
               disabled={isInterpreting || isPrinting}
@@ -632,9 +886,11 @@ const FortuneNumber = ({
       {isInterpreting && (
         <LoadingOverlay>{t("fortuneTelling.interpreting")}</LoadingOverlay>
       )}
-      
+
       {isPrinting && (
-        <LoadingOverlay>{t("fortuneTelling.printing", "準備列印中...")}</LoadingOverlay>
+        <LoadingOverlay>
+          {t("fortuneTelling.printing", "準備列印中...")}
+        </LoadingOverlay>
       )}
     </Container>
   );

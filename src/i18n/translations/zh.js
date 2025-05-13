@@ -100,5 +100,8 @@ export default {
       nameAnalysis: "結合姓名學分析",
       personalFortune: "的專屬籤詩",
       generatingPoem: "籤詩生成中...",
+      printFortune: "列印籤詩",
+      printDevMode: "列印開發者模式",
+      printing: "列印中..."
     },
   };
