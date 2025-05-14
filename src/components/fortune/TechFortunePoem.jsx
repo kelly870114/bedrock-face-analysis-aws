@@ -7,7 +7,7 @@ const TechFortunePoemContainer = styled.div`
   max-width: 250px;
   margin: 0 auto 40px;
   position: relative;
-  aspect-ratio: 5 / 14; // 固定長寬比為9:16，類似手機螢幕比例
+  aspect-ratio: 5.5 / 16; // 5/14 固定長寬比為9:16，類似手機螢幕比例
   background-image: url('/tech-fortune-bg.png');
   background-size: cover;
   background-position: center;
@@ -17,7 +17,7 @@ const TechFortunePoemContainer = styled.div`
 // AWS Logo 部分
 const LogoSection = styled.div`
   position: absolute;
-  top: 5%;
+  top: 8%;
   left: 0;
   right: 0;
   display: flex;
@@ -32,7 +32,7 @@ const LogoSection = styled.div`
 // 雲端開運運勢標題
 const TitleSection = styled.div`
   position: absolute;
-  top: 13%;
+  top: 16%;
   left: 50%;
   transform: translateX(-50%);
   width: 80%;
@@ -68,7 +68,7 @@ const TitleSection = styled.div`
 // 主要籤詩內容邊框區域
 const PoemContentSection = styled.div`
   position: absolute;
-  top: 21%;
+  top: 24%;
   left: 50%;
   transform: translateX(-50%);
   width: 70%; 
@@ -117,7 +117,7 @@ const PoemCharacter = styled.span`
 // 底部 Powered By 區域
 const FooterSection = styled.div`
   position: absolute;
-  bottom: 34%;
+  bottom: 32%;
   left: 0;
   right: 0;
   text-align: center;
@@ -156,7 +156,7 @@ const WishSection = styled.div`
   }
   
   .wish-area {
-    height: 150px; // 創建一個空白區域，讓使用者可以寫字
+    height: 145px; // 創建一個空白區域，讓使用者可以寫字
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     border: 1px dashed rgba(255, 255, 255, 0.3);
