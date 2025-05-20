@@ -418,9 +418,9 @@ const FortuneNumber = ({
             
             .print-fortune {
               max-width: 100%;
-              max-height: 85vh; /* 默認值設為85% */
+              max-height: 90vh; /* 默認值設為85% */
               object-fit: contain;
-              transform: rotate(180deg) translateY(8%); /* 默認值設為8% */
+              transform: rotate(180deg) translateY(0%); /* 默認值設為8% */
             }
             
             #controls {
