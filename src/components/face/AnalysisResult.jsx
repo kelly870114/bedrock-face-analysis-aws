@@ -99,7 +99,7 @@ const AnalysisResult = ({
 
       // 設置 html2canvas 選項
       const canvas = await html2canvas(clone, {
-        backgroundColor: "#FDF6E9",
+        backgroundColor: "#009E93",
         scale: 2, // 提高輸出質量
         useCORS: true,
         logging: false,
