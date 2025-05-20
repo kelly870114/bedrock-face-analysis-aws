@@ -244,7 +244,7 @@ const FortuneNumber = ({
         return;
       }
 
-      // 使用預設最佳值 - 縮放85%和垂直位置8%
+      // 使用預設最佳值 - 縮放95%和垂直位置0%
       printWindow.document.write(`
       <html>
         <head>
@@ -273,7 +273,7 @@ const FortuneNumber = ({
             
             .print-fortune {
               max-width: 100%;
-              max-height: 90vh; /* 縮放85% */
+              max-height: 95vh; /* 縮放95% */
               object-fit: contain;
               transform: rotate(180deg) translateY(0%); /* 垂直位置8% */
             }
