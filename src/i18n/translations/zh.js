@@ -104,6 +104,8 @@ export default {
       generatingPoem: "籤詩生成中...",
       printFortune: "列印籤詩",
       printDevMode: "列印開發者模式",
-      printing: "列印中..."
+      printing: "列印中...",
+      scanToDownload: "掃描 QR Code 下載分析結果",
+      downloadExpiration: "請在 10 分鐘內完成下載",
     },
   };
