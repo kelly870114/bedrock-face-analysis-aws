@@ -843,8 +843,8 @@ const FortuneNumber = ({
                     : t("fortuneTelling.printFortune", "列印籤詩")}
                 </InterpretButton>
 
-                {/* 新增開發者模式按鈕 */}
-                <InterpretButton
+                {/* 列印開發者模式按鈕 */}
+                {/* <InterpretButton
                   onClick={handleDevModePrint}
                   disabled={isPrinting}
                   style={{
@@ -855,7 +855,7 @@ const FortuneNumber = ({
                   }}
                 >
                   {t("fortuneTelling.printDevMode", "列印 (開發者模式)")}
-                </InterpretButton>
+                </InterpretButton> */}
               </>
             )}
 
