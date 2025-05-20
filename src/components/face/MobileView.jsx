@@ -34,7 +34,7 @@ const MobileView = () => {
   const [eventInfo, setEventInfo] = useState(null);
   const [analysisId, setAnalysisId] = useState(null);
   const wsRef = useRef(null);
-  
+
   // 獲取事件ID
   const eventId = searchParams.get("event");
 
@@ -232,22 +232,27 @@ const MobileView = () => {
         <Corner className="top-right" />
         <Corner className="bottom-left" />
         <Corner className="bottom-right" />
-        
-        {/* 語言切換器 - 確保傳遞 eventId 參數 */}
-        <LanguageSwitcher 
-          currentPath="/face/mobile" 
-          queryParams={{ event: eventId }} 
-        />
 
         <ContentWrapper>
+          {/* 語言切換器 - 確保傳遞 eventId 參數 */}
+          <LanguageSwitcher
+            currentPath="/face/mobile"
+            queryParams={{ event: eventId }}
+          />
           {!isAnalyzing && !analysisResult && (
             <>
               <TitleContainer>
-                <img src="/app_title_face_aws.png" alt={t("faceAnalysis.title")} />
+                <img
+                  src="/app_title_face_aws.png"
+                  alt={t("faceAnalysis.title")}
+                />
               </TitleContainer>
 
               <LogoContainer>
-                <img src="/mobile_logo_face_aws.png" alt={t("faceAnalysis.title")} />
+                <img
+                  src="/mobile_logo_face_aws.png"
+                  alt={t("faceAnalysis.title")}
+                />
               </LogoContainer>
 
               <CameraButton
