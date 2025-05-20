@@ -9,6 +9,8 @@ export default {
       back: "返回",
       close: "關閉",
       save: "儲存",
+      processing: "下載中...",
+      redirecting: "載入中...",
       copyright: "© 2024 Amazon Web Services Solutions Architect. All rights reserved.",
     },
   

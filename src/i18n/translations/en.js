@@ -9,6 +9,8 @@ export default {
       back: "Back",
       close: "Close",
       save: "Save",
+      processing: "Processing...",
+      redirecting: "Redirecting...",
       copyright: "© 2024 Amazon Web Services Solutions Architect. All rights reserved.",
     },
   
