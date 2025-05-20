@@ -68,7 +68,7 @@ const AnalysisResult = ({
   const [isUploading, setIsUploading] = useState(false);
   const resultRef = useRef(null);
   const urlParams = new URLSearchParams(window.location.search);
-  const eventId = urlParams.get('event');
+  const eventId = urlParams.get("event");
 
   const getIconForBlock = (blockIndex) => {
     return `/face_${blockIndex}_white.png`;
@@ -80,18 +80,18 @@ const AnalysisResult = ({
 
       // 取得目標元素
       const element = resultRef.current;
-      
+
       // 獲取元素的實際尺寸
       const originalWidth = element.offsetWidth;
       const originalHeight = element.offsetHeight;
-      
+
       // 創建一個新的容器來保持原始佈局
-      const container = document.createElement('div');
+      const container = document.createElement("div");
       container.style.width = `${originalWidth}px`;
-      container.style.position = 'absolute';
-      container.style.left = '-9999px';
-      container.style.top = '-9999px';
-      
+      container.style.position = "absolute";
+      container.style.left = "-9999px";
+      container.style.top = "-9999px";
+
       // 克隆目標元素到新容器
       const clone = element.cloneNode(true);
       container.appendChild(clone);
@@ -107,12 +107,14 @@ const AnalysisResult = ({
         height: originalHeight,
         onclone: (clonedDoc) => {
           // 確保克隆的元素有正確的樣式
-          const clonedElement = clonedDoc.body.querySelector('[class*="ResultContainer"]');
+          const clonedElement = clonedDoc.body.querySelector(
+            '[class*="ResultContainer"]'
+          );
           if (clonedElement) {
             clonedElement.style.width = `${originalWidth}px`;
             clonedElement.style.height = `${originalHeight}px`;
           }
-        }
+        },
       });
 
       // 清理臨時元素
@@ -186,7 +188,9 @@ const AnalysisResult = ({
         {result.faceShape && (
           <AnalysisBlock>
             <BlockTitle>
-              <span className="title-text">{t("faceAnalysis.faceShapeAnalysis")}</span>
+              <span className="title-text">
+                {t("faceAnalysis.faceShapeAnalysis")}
+              </span>
             </BlockTitle>
             {Object.entries(result.faceShape.content).map(([key, value]) => (
               <ContentItem key={key}>
@@ -200,7 +204,9 @@ const AnalysisResult = ({
         {result.features && (
           <AnalysisBlock>
             <BlockTitle>
-              <span className="title-text">{t("faceAnalysis.featureAnalysis")}</span>
+              <span className="title-text">
+                {t("faceAnalysis.featureAnalysis")}
+              </span>
             </BlockTitle>
             {Object.entries(result.features.content).map(([key, value]) => (
               <ContentItem key={key}>
@@ -214,7 +220,9 @@ const AnalysisResult = ({
         {result.overall && (
           <AnalysisBlock>
             <BlockTitle>
-              <span className="title-text">{t("faceAnalysis.overallAnalysis")}</span>
+              <span className="title-text">
+                {t("faceAnalysis.overallAnalysis")}
+              </span>
             </BlockTitle>
             {Object.entries(result.overall.content).map(([key, value]) => (
               <ContentItem key={key}>
@@ -236,16 +244,29 @@ const AnalysisResult = ({
       </ResultContainer>
 
       <DownloadButton onClick={handleDownload} disabled={isUploading}>
-        {isUploading ? t("faceAnalysis.processing") : t("faceAnalysis.downloadResult")}
+        {isUploading
+          ? t("faceAnalysis.processing")
+          : t("faceAnalysis.downloadResult")}
       </DownloadButton>
       {isFromFortune ? (
         <RetakeButton
-          onClick={() => (window.location.href = `/fortune/mobile?event=${eventId}`)}
+          onClick={() =>
+            (window.location.href = `/fortune/mobile?event=${eventId}`)
+          }
         >
           {t("fortuneTelling.retryFortune")}
         </RetakeButton>
       ) : (
-        <RetakeButton onClick={onRetake}>
+        <RetakeButton
+          onClick={() => {
+            // 清理資源
+            if (imageUrl) {
+              URL.revokeObjectURL(imageUrl);
+            }
+            // 重新載入頁面回到首頁狀態
+            window.location.reload();
+          }}
+        >
           {t("faceAnalysis.retakePhoto")}
         </RetakeButton>
       )}

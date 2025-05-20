@@ -22,6 +22,20 @@ import {
   ImageOverlay,
 } from "./styles-mobile";
 
+const AWS_TIPS = [
+  "你知道嗎？面相大師採用全 Serverless 架構，無需管理伺服器，只要專心看面相 🤓！",
+  "Nova Pro 有多強？能同時看懂文字、圖片、影片 👀！",
+  "Nova Micro 超高速生成！每秒200+字符，專為快速回應設計的 💨！",
+  "Nova Canvas 能把文字變成專業圖片，廣告圖片生成小助手 🖼️！",
+  "Nova Lite 可以處理影像、影片和文字輸入的同時展現出快如閃電的速度⚡️！",
+  "想要即時、類似人類的語音對話嗎？Nova Sonic 語音理解和生成模型幫你達成！",
+  "Amazon Bedrock 可以透過單一 API 存取多種 LLM 並建置專屬您的生成式 AI 應用程式 🎨！",
+  "想要從公司的資料來源向模型提供資訊嗎？Knowledge Base 簡單並安全的幫你達成 📦！",
+  "今年最 Hot 的主題 Agent 也可以在 Bedrock 上設計喔 🤖！",
+  "想要建立自己的 MCP？Q Developer CLI 現在支援 MCP 囉 🎊！",
+  "小秘密 🤫 籤詩大師是使用 Nova Pro 當解籤師唷！能支援繁體中文又懂算命，太厲害了吧！",
+];
+
 const MobileView = () => {
   const [searchParams] = useSearchParams();
   const { t, language } = useTranslation();
@@ -34,10 +48,28 @@ const MobileView = () => {
   const [eventInfo, setEventInfo] = useState(null);
   const [analysisId, setAnalysisId] = useState(null);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
+  const [currentTipIndex, setCurrentTipIndex] = useState(0);
   const wsRef = useRef(null);
 
   // 獲取事件ID
   const eventId = searchParams.get("event");
+
+  // AWS 小知識輪播效果
+  useEffect(() => {
+    let tipInterval;
+
+    if (isAnalyzing) {
+      tipInterval = setInterval(() => {
+        setCurrentTipIndex((prevIndex) => (prevIndex + 1) % AWS_TIPS.length);
+      }, 8000); // 每8秒切換一次
+    }
+
+    return () => {
+      if (tipInterval) {
+        clearInterval(tipInterval);
+      }
+    };
+  }, [isAnalyzing]);
 
   // WebSocket connection function
   const connectWebSocket = (analysis_id) => {
@@ -191,11 +223,14 @@ const MobileView = () => {
     if (wsRef.current) {
       wsRef.current.close();
     }
+    // 完全重置所有狀態到初始狀態
     setCapturedImage(null);
     setAnalysisResult(null);
     setError(null);
     setAnalysisId(null);
-    setShowCamera(true);
+    setIsAnalyzing(false);
+    setShowCamera(false); // 改為 false，回到首頁而不是相機
+    setCurrentTipIndex(0); // 重置小知識索引
   };
 
   // loading
@@ -282,7 +317,29 @@ const MobileView = () => {
             <ImageContainer>
               <div className="image-wrapper">
                 <img src={capturedImage} alt={t("faceAnalysis.title")} />
-                <ImageOverlay>{t("faceAnalysis.analyzing")}</ImageOverlay>
+                <ImageOverlay>
+                  <div style={{ textAlign: "center", lineHeight: "1.6" }}>
+                    <div
+                      style={{
+                        marginBottom: "16px",
+                        fontSize: "24px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      分析中...
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "20px",
+                        opacity: "0.9",
+                        maxWidth: "300px",
+                        margin: "0 auto",
+                      }}
+                    >
+                      {AWS_TIPS[currentTipIndex]}
+                    </div>
+                  </div>
+                </ImageOverlay>
               </div>
             </ImageContainer>
           )}

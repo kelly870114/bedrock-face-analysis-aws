@@ -128,7 +128,7 @@ export const ImageOverlay = styled.div`
   font-size: 24px;
   font-weight: 500;
   font-family: 'Noto Serif TC', serif;
-  animation: ${fadeInOut} 2s infinite ease-in-out;
+  animation: ${fadeInOut} 3s infinite ease-in-out;
 `;
 
 // 最外層容器
