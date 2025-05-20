@@ -33,6 +33,7 @@ const MobileView = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [eventInfo, setEventInfo] = useState(null);
   const [analysisId, setAnalysisId] = useState(null);
+  const [isButtonHovered, setIsButtonHovered] = useState(false);
   const wsRef = useRef(null);
 
   // 獲取事件ID
@@ -258,9 +259,14 @@ const MobileView = () => {
               <CameraButton
                 onClick={() => setShowCamera(true)}
                 disabled={isAnalyzing}
+                onMouseEnter={() => setIsButtonHovered(true)}
+                onMouseLeave={() => setIsButtonHovered(false)}
               >
-                <CameraIcon size={24} color="white" />
-                {t("faceAnalysis.startAnalysis")}
+                <CameraIcon
+                  size={24}
+                  color={isButtonHovered ? "#009e93" : "white"}
+                />
+                開始分析
               </CameraButton>
             </>
           )}
