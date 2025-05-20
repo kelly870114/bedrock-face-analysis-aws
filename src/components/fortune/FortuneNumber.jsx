@@ -273,7 +273,7 @@ const FortuneNumber = ({
             
             .print-fortune {
               max-width: 100%;
-              max-height: 95vh; /* 縮放95% */
+              max-height: 100vh; /* 縮放95% */
               object-fit: contain;
               transform: rotate(180deg) translateY(0%); /* 垂直位置8% */
             }
@@ -418,7 +418,7 @@ const FortuneNumber = ({
             
             .print-fortune {
               max-width: 100%;
-              max-height: 90vh; /* 默認值設為85% */
+              max-height: 100vh; /* 默認值設為100% */
               object-fit: contain;
               transform: rotate(180deg) translateY(0%); /* 默認值設為8% */
             }
