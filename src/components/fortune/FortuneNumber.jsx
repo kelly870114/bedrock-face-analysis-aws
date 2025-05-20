@@ -273,9 +273,9 @@ const FortuneNumber = ({
             
             .print-fortune {
               max-width: 100%;
-              max-height: 85vh; /* 縮放85% */
+              max-height: 90vh; /* 縮放85% */
               object-fit: contain;
-              transform: rotate(180deg) translateY(8%); /* 垂直位置8% */
+              transform: rotate(180deg) translateY(0%); /* 垂直位置8% */
             }
             
             @media print {

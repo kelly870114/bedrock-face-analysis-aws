@@ -408,7 +408,7 @@ const FortuneInterpret = ({
         </AnalysisBlock>
       </ResultContainer>
 
-      <ButtonContainer>
+      {/* <ButtonContainer>
         <ActionButton onClick={handleDownload} disabled={isUploading || isAnalyzing}>
           {isUploading ? t("common.processing") : t("fortuneTelling.downloadResult")}
         </ActionButton>
@@ -432,7 +432,7 @@ const FortuneInterpret = ({
         >
           {isReloading ? t("common.redirecting") : t("fortuneTelling.retryFortune")}
         </ActionButton>
-      </ButtonContainer>
+      </ButtonContainer> */}
 
       {showCamera && (
         <Camera

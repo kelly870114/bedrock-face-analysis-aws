@@ -252,12 +252,12 @@ const FortuneMobileView = ({ lang }) => {
                 </StartButton>
 
                 {/* 已有籤號按鈕 */}
-                <TransparentStartButton
+                {/* <TransparentStartButton
                   disabled={!selectedCategory || isLoading}
                   onClick={() => setShowNumberModal(true)}
                 >
                   {t("fortuneTelling.hasFortuneNumber")}
-                </TransparentStartButton>
+                </TransparentStartButton> */}
               </FormContainer>
             </>
           ) : (
