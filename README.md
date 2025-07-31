@@ -4,55 +4,70 @@
 > </div>
 > For more Amazon Q Developer's new feature: https://aws.amazon.com/blogs/aws/new-amazon-q-developer-agent-capabilities-include-generating-documentation-code-reviews-and-unit-tests/
 &nbsp;
-# Amazon Bedrock Face Analysis Web Application
+# Physiognomy & Fortune Telling Web Application
 
-This project is a web application that uses Amazon Bedrock to analyze facial features based on user-uploaded photos.
+A comprehensive web application powered by Amazon Bedrock AI for facial analysis and fortune telling, featuring multi-language support and interactive modes.
 
-The application consists of a React-based frontend that allows users to capture photos using their mobile device's camera or enter an event code on desktop. The captured images are then sent to a backend API for analysis using Amazon Bedrock's AI capabilities.
+This React-based frontend provides face analysis and fortune telling capabilities. Users can access the application via desktop (event code entry) or mobile (camera capture and analysis).
+
+## Features
+
+- **Face Analysis**: AI-powered facial feature analysis with personalized interpretations
+- **Fortune Telling**: Traditional fortune telling combined with modern AI technology
+- **Multi-language Support**: Chinese and English interfaces
+- **Cross-platform**: Optimized for both desktop and mobile experiences
+- **Result Export**: Screenshot capture and QR code sharing capabilities
 
 ## Repository Structure
 
 ```
 .
 ├── package.json
-├── public
-│   ├── index.html
-│   └── manifest.json
+├── public/
+│   ├── jenn-ai/           # AI avatar images
+│   ├── *.png              # App icons and backgrounds
+│   └── index.html
 ├── README.md
-└── src
-    ├── App.css
+└── src/
     ├── App.jsx
-    ├── App.test.js
-    ├── components
-    │   ├── desktop
-    │   │   ├── DesktopView.jsx
-    │   │   └── styles.js
-    │   └── mobile
-    │       ├── AnalysisResult.jsx
-    │       ├── Camera.jsx
-    │       ├── MobileView.jsx
-    │       └── styles.js
-    ├── config
+    ├── components/
+    │   ├── common/         # Shared components
+    │   │   ├── Camera/
+    │   │   ├── DesktopView/
+    │   │   └── LanguageSwitcher.jsx
+    │   ├── face/           # Face analysis components
+    │   │   ├── AnalysisResult.jsx
+    │   │   ├── MobileView.jsx
+    │   │   └── styles-*.js
+    │   └── fortune/        # Fortune telling components
+    │       ├── FortuneMobileView.jsx
+    │       ├── FortuneInterpret.jsx
+    │       └── styles-*.js
+    ├── config/
     │   └── index.js
-    ├── index.css
+    ├── i18n/               # Internationalization
+    │   ├── translations/
+    │   └── config.js
     └── index.js
 ```
 
-### Key Files:
+### Key Components:
 
-- `src/index.js`: The entry point of the React application.
-- `src/components/mobile/MobileView.jsx`: Handles the mobile view of the application, including camera functionality and result display.
-- `src/components/mobile/AnalysisResult.jsx`: Renders the analysis results received from the backend.
-- `src/components/mobile/Camera.jsx`: Manages the camera interface for capturing photos.
-- `src/components/desktop/DesktopView.jsx`: Handles the desktop view, including event code input and QR code generation.
-- `src/config/index.js`: Contains configuration settings, including the API endpoint.
+- `src/App.jsx`: Main application with multi-language routing
+- `src/components/face/MobileView.jsx`: Mobile face analysis interface with camera functionality
+- `src/components/face/AnalysisResult.jsx`: Analysis results display with download capabilities
+- `src/components/fortune/FortuneMobileView.jsx`: Fortune telling mobile interface
+- `src/components/common/DesktopView/DesktopView.jsx`: Desktop entry point with QR code generation
+- `src/i18n/`: Multi-language support system
+- `src/config/index.js`: API endpoint configuration
 
 ## Usage Instructions
 
 ### Prerequisites
 
-- Node.js (version 14 or higher)
-- npm (version 6 or higher)
+- Node.js (version 18 or higher)
+- npm (version 8 or higher)
+- Modern browser with Camera API support
 
 ### Installation
 
@@ -73,7 +88,13 @@ The application consists of a React-based frontend that allows users to capture 
 
 ### Configuration
 
-Set the `REACT_APP_API_ENDPOINT` environment variable in /src/config/index.js to your  API Gateway endpoint. If not set, it will default to `'https://nc009yrm00.execute-api.us-east-1.amazonaws.com/prod'`.
+Set the `REACT_APP_API_ENDPOINT` environment variable to your API Gateway endpoint:
+
+```bash
+export REACT_APP_API_ENDPOINT=your-api-endpoint
+```
+
+If not set, it defaults to the configured endpoint in `src/config/index.js`.
 
 ### Running the Application
 
@@ -87,16 +108,27 @@ Set the `REACT_APP_API_ENDPOINT` environment variable in /src/config/index.js to
 ### Usage
 
 #### Desktop View:
-1. Enter the event code provided by the organizer.
-2. If valid, a QR code will be displayed.
-3. Use a mobile device to scan the QR code to access the mobile view.
+1. Select language (Chinese/English)
+2. Enter event code or choose function mode
+3. Scan QR code to access mobile interface
 
-#### Mobile View:
-1. Grant camera permissions when prompted.
-2. Capture a photo using the camera interface.
-3. Wait for the analysis results to be displayed.
-4. Review the facial analysis results, including face shape, features, and overall analysis.
-5. Use the "Retake Photo" button to capture a new image if desired.
+#### Mobile Modes:
+
+**Face Analysis Mode:**
+1. Grant camera permissions
+2. Capture clear facial photo
+3. Wait for AI analysis results
+4. View detailed face interpretation
+5. Download results or retake photo
+
+**Fortune Telling Mode:**
+1. Select fortune telling type
+2. Follow interactive instructions
+3. Receive personalized reading
+
+#### Multi-language Support:
+- `/zh/` - Chinese interface
+- `/en/` - English interface
 
 ### Testing
 
@@ -105,58 +137,77 @@ Run the test suite with:
 npm test
 ```
 
+## Dependencies
+
+```json
+{
+  "react": "^18.3.1",
+  "react-router-dom": "^6.28.0",
+  "styled-components": "^6.1.13",
+  "html2canvas": "^1.4.1",
+  "lucide-react": "^0.292.0",
+  "qrcode.react": "^4.1.0"
+}
+```
+
 ### Troubleshooting
 
-1. Camera Access Issues:
-   - Ensure that your browser has permission to access the camera.
-   - If using HTTPS, make sure your SSL certificate is valid.
-   - Problem: "無法存取相機，請確認已授予相機權限" (Unable to access camera, please confirm camera permissions are granted)
-   - Solution: Check browser settings and grant camera access permissions.
+**Camera Access Issues:**
+- Check browser permissions
+- Ensure HTTPS connection
+- Refresh page to re-authorize
 
-2. API Connection Errors:
-   - Verify that the `REACT_APP_API_ENDPOINT` is correctly set.
-   - Check your network connection.
-   - Problem: "系統發生錯誤，請稍後再試" (System error occurred, please try again later)
-   - Solution: Verify API endpoint configuration and network connectivity.
+**API Connection Errors:**
+- Verify network connectivity
+- Check API endpoint configuration
+- Review browser developer tools
 
-3. Event Code Issues:
-   - Ensure you're entering a valid event code.
-   - Problem: "無效的活動代碼" (Invalid event code)
-   - Solution: Double-check the event code provided by the organizer.
+**Image Upload Failures:**
+- Confirm image size limits
+- Check network stability
+- Retry upload operation
 
-4. Performance Optimization:
-   - If experiencing slow image uploads, consider compressing images before sending to the API.
-   - Monitor network requests in the browser's developer tools to identify bottlenecks.
+## API Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/analyze` | POST | Face analysis |
+| `/checkEvent` | GET | Event code validation |
+| `/uploadImage` | POST/GET | Image upload/download |
+| `/fortune` | POST | Fortune telling |
 
 ## Data Flow
 
-The application follows this data flow for facial analysis:
-
-1. User enters an event code (desktop) or scans a QR code (mobile).
-2. Mobile view is loaded, and camera access is requested.
-3. User captures a photo using the mobile device's camera.
-4. The captured image is converted to a base64 string.
-5. The base64 image is sent to the API Gateway (`/analyze` endpoint) via a POST request and trigger a Lambda Function.
-6. The backend processes the image using Amazon Bedrock's AI capabilities.
-7. Analysis results are returned to the frontend.
-8. Results are displayed to the user, showing face shape, features, and overall analysis.
-
 ```
-[User] -> [Camera Capture] -> [Image Processing] -> [API Request] -> [Amazon Bedrock]
-                                                                         |
-[Display Results] <- [Parse Response] <- [Receive Analysis] <-------------
+[Desktop Entry] → [QR Code] → [Mobile Interface] → [Camera/Input]
+                                      ↓
+[API Gateway] → [Lambda Functions] → [Amazon Bedrock]
+                                      ↓
+[Results Display] ← [Response Processing] ← [AI Analysis]
 ```
 
-## Infrastructure
+## Deployment
 
-The frontend application is designed to work with a serverless backend infrastructure. While the specific backend implementation details are not provided in the given code, the application expects an API endpoint that can handle image analysis requests.
+The application is deployed on AWS Amplify with:
+- Automatic CI/CD pipeline
+- Multi-environment support
+- Custom domain configuration
+- SSL certificate management
 
-Key infrastructure components inferred from the frontend code:
+## Security Features
 
-1. API Gateway: The `config.apiEndpoint` suggests the use of API Gateway to handle HTTP requests.
-2. Lambda Functions: The `/analyze` and `/checkEvent` endpoints likely trigger Lambda functions for processing.
-3. Amazon Bedrock: Used for AI-powered facial analysis, as indicated by the application's purpose.
+- Pre-signed URLs for image uploads
+- HTTPS encryption
+- Secure camera permission handling
+- No sensitive data stored in frontend
 
-The frontend is hosted on AWS Amplify.
+## Performance Optimizations
 
-![Architecture](./public/architecture.png)
+- Image compression
+- Lazy loading components
+- Caching strategies
+- Bundle size optimization
+
+---
+
+*Developed with Amazon Q Developer assistance*
