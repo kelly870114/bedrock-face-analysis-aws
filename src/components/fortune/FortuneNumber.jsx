@@ -244,7 +244,7 @@ const FortuneNumber = ({
         return;
       }
 
-      // 使用預設最佳值 - 縮放95%和垂直位置0%
+      // 使用預設最佳值 - 縮放85%和垂直位置8%
       printWindow.document.write(`
       <html>
         <head>

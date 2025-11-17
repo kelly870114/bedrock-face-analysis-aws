@@ -234,7 +234,7 @@ const TechFortunePoem = forwardRef((props, ref) => {
       {/* 底部願望區域 */}
       <WishSection>
         <div className="wish-container">
-          <div className="wish-title">寫下年度願望換取小禮物</div>
+          <div className="wish-title">寫下年度願望</div>
           <div className="wish-area"></div>
         </div>
       </WishSection>
